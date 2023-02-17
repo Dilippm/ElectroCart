@@ -76,10 +76,12 @@ const editCategory = async (req, res) => {
     let newdescription = req.body.newdescription;
     console.log(newData);
     let capData = newData.toUpperCase();
+    
     const id = req.params.id;
 
     // Check if category already exists
     const existingCategory = await category.findOne({ category: capData });
+  
     if (existingCategory && existingCategory._id != id) {
       res.render('editcategory', { message: "Category already exists", vcategory: existingCategory });
     } else {

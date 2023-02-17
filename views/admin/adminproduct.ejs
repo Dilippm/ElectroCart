@@ -25,16 +25,34 @@
           <th scope="col">Price</th>
           <th scope="col">Quantity</th>
           <th scope="col">Image</th>
+          
           <th scope="col">Action</th>
         </tr>
       </thead>
-      <tbody>
+    
+        <tbody>
+          <% productData.forEach((element,index) => {%>
+            
+       
+          <tr>
+            <th scope="row"><%=index+1%></th>
+            <td><%=element.productName%></td>
+            <td><%=element.category%></td>
+            <td><%=element.description%></td>
+            <td><%=element.price%></td>
+            <td><%=element.quantity%></td>
+            <td><img src="/productImages/<%=element.images[0]%>" alt="" width="100px" height="100px"></td>
+            <td><button type="button" class="btn btn-primary"><a href="/admin/product/editproduct/<%=element.id%>" style="color: white; text-decoration: none;">Edit</a> </button> 
+              <button type="button" class="btn btn-danger"><a style="color: white; text-decoration: none;" href="/admin/product/deleteproduct/<%=element.id%>">Delete</a></button></td>
+  
+  
+           
+          </tr>
+       <% });%>
+        </tbody>
         
-      </tbody>
-    </table>
-  
-  
-            </table>
+    
+    
             
 
             <script>

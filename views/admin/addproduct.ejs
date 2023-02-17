@@ -14,11 +14,18 @@
             <div class="row">
                 <div class="col-md-6">
                     <h2 class="text-center">Add Product</h2>
-                    <form action="/admin/product" method="post">
+                    <form action="/admin/product" method="post" enctype="multipart/form-data" >
                         <label for="">Product name</label>
-                        <input type="text" name="productname" class="form-control" required>
+                        <input type="text" name="productName" class="form-control" required>
                         <label for="">Category</label>
-                        <input type="text" name="category" class="form-control" required>
+                        <select class="form-control" name="category" placeholder=" select category">
+
+                            <option >Select the category</option>
+                            <% sendcategory.forEach(element=>{%>
+                            <option value="<%=element._id%>"><%=element.category%></option>
+                            <%})%>
+                        </select>
+                       
     
                          <label for="">Description</label>
                         <input type="text" name="description" class="form-control" required>
@@ -26,11 +33,12 @@
                         <input type="text" name="price" class="form-control" required>
                         <label for="">Quantity</label>
                         <input type="text" name="quantity" class="form-control" required>
+                        <label for="">Images</label>
+                        <input multiple type="file" name="images" class="form-control" >
     
-                        <label for="">Image</label>
-                        <input type="file" name="image" class="form-control" required>
-                         <!-- <label for="">Password</label>
-                        <input type="text" name="Password" class="form-control"> -->
+                       
+                       
+                         
                         <button type="submit" class="btn btn-success mt-4">Add</button> 
                         <% if(typeof message !=="undefined") { %>
                             <h1 style="font-size: 14px;color: brown;"><%=message  %></h1>

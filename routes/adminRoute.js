@@ -13,6 +13,7 @@ const admincontroller=require('../controllers/admincontroller')
 const categorycontroller = require('../controllers/categorycontroller')
 const productcontroller = require('../controllers/productcontroller')
 
+
 adminRoute.set('view engine','ejs')
 adminRoute.set('views','./views/admin')
 
@@ -20,6 +21,27 @@ adminRoute.use(bodyparser.json())
 adminRoute.use(bodyparser.urlencoded({extended:true}));
 const path=require('path')
 adminRoute.use(express.static(path.join(__dirname,'public')))
+
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination:function(req,file,cb){
+        cb(null,path.join(__dirname,'../public/productImages'),function(err,success){
+            if (err) {
+                throw err;
+            }
+
+        });
+    },
+    filename:function(req,file,cb){
+            const name = Date.now()+'-'+file.originalname;
+            cb(null,name,function(err,success){
+                if (err) {
+                    throw err;
+                }
+            });
+    }
+});
+const upload = multer({storage:storage});
 
 adminRoute.get('/',auth.isLogout,admincontroller.adminRegister)
 adminRoute.post('/',admincontroller.verifylogin)
@@ -37,6 +59,10 @@ adminRoute.get('/category/editcategory/:id',auth.isLogin,categorycontroller.view
 adminRoute.post('/category/editcategory/:id',categorycontroller.editCategory);
 adminRoute.get('/product',auth.isLogin,productcontroller.loadProduct);
 adminRoute.get('/product/addproduct',auth.isLogin,productcontroller.addProduct);
+adminRoute.post('/product',upload.array('images',3),productcontroller.insertProduct);
+adminRoute.get('/product/deleteproduct/:id',productcontroller.deleteProduct);
+adminRoute.get('/product/editproduct')
+
 
 
 
