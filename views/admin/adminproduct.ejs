@@ -1,0 +1,47 @@
+<%- include('../layout/admin/header.ejs')%>
+
+<%- include('../layout/admin/navbar.ejs')%>
+<%- include('../layout/admin/sidebar.ejs')%>
+
+<main id="main" class="main">
+    <div class="pagetitle">
+      <h1>Product</h1>
+      
+    </div>
+    <div>
+     <button type="button" class="btn btn-primary"><a class="text-decoration-none text-white" href="/admin/product/addproduct">Add product</a></button>
+      <br>
+      <br>
+    </div>
+  
+  
+    <table class="table" id="categorytable">
+      <thead>
+        <tr>
+          <th scope="col">No</th>
+          <th scope="col">product Name</th>
+          <th scope="col">Category</th>
+          <th scope="col">Description</th>
+          <th scope="col">Price</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Image</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+      </tbody>
+    </table>
+  
+  
+            </table>
+            
+
+            <script>
+              $(document).ready( function () {
+              $('#categorytable').DataTable();
+          });
+          </script>
+      </div><!-- End Page Title -->
+
+<%- include('../layout/admin/footer.ejs')%>
