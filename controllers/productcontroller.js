@@ -45,23 +45,7 @@ const insertProduct =async(req,res)=>{
         console.log(error.message);
     }
 }
-const loadEditProduct =async(req,res)=>{
-    try {
-        
-        const category= await Category.find({})
-        res.render('editproduct',{sendcategory:category})
-    } catch (error) {
-        console.log(error.message);
-    }
-    try {
-        const id=req.params.id;
-        console.log(id);
-        const categorydata=await category.findById({_id:id})
-        res.render('editcategory',{vcategory:categorydata});
-      } catch (error) {
-        console.log(error.message);
-      }
-}
+
 const deleteProduct =async(req,res)=>{
     try {
         const id=req.params.id;
@@ -71,14 +55,17 @@ const deleteProduct =async(req,res)=>{
         console.log(error.message);
     }
 }
- 
+
+
+  
 module.exports={
   
     loadProduct,
     addProduct,
     insertProduct,
-    loadEditProduct,
+  
     deleteProduct,
+   
 
     
 }

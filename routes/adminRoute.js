@@ -61,7 +61,7 @@ adminRoute.get('/product',auth.isLogin,productcontroller.loadProduct);
 adminRoute.get('/product/addproduct',auth.isLogin,productcontroller.addProduct);
 adminRoute.post('/product',upload.array('images',3),productcontroller.insertProduct);
 adminRoute.get('/product/deleteproduct/:id',productcontroller.deleteProduct);
-adminRoute.get('/product/editproduct')
+
 
 
 

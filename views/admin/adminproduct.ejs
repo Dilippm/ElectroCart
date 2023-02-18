@@ -1,65 +1,69 @@
 <%- include('../layout/admin/header.ejs')%>
 
 <%- include('../layout/admin/navbar.ejs')%>
-<%- include('../layout/admin/sidebar.ejs')%>
 
-<main id="main" class="main">
-    <div class="pagetitle">
-      <h1>Product</h1>
-      
-    </div>
-    <div>
-     <button type="button" class="btn btn-primary"><a class="text-decoration-none text-white" href="/admin/product/addproduct">Add product</a></button>
-      <br>
-      <br>
-    </div>
-  
-  
-    <table class="table" id="categorytable">
-      <thead>
-        <tr>
-          <th scope="col">No</th>
-          <th scope="col">product Name</th>
-          <th scope="col">Category</th>
-          <th scope="col">Description</th>
-          <th scope="col">Price</th>
-          <th scope="col">Quantity</th>
-          <th scope="col">Image</th>
-          
-          <th scope="col">Action</th>
-        </tr>
-      </thead>
+
+<div class="container">
+  <div class="pagetitle" style="margin-top: 100px;">
+    <h1>Product</h1>
     
-        <tbody>
-          <% productData.forEach((element,index) => {%>
-            
-       
-          <tr>
-            <th scope="row"><%=index+1%></th>
-            <td><%=element.productName%></td>
-            <td><%=element.category%></td>
-            <td><%=element.description%></td>
-            <td><%=element.price%></td>
-            <td><%=element.quantity%></td>
-            <td><img src="/productImages/<%=element.images[0]%>" alt="" width="100px" height="100px"></td>
-            <td><button type="button" class="btn btn-primary"><a href="/admin/product/editproduct/<%=element.id%>" style="color: white; text-decoration: none;">Edit</a> </button> 
-              <button type="button" class="btn btn-danger"><a style="color: white; text-decoration: none;" href="/admin/product/deleteproduct/<%=element.id%>">Delete</a></button></td>
-  
-  
-           
-          </tr>
-       <% });%>
-        </tbody>
+  </div>
+  <div>
+   <button type="button" class="btn btn-primary"><a class="text-decoration-none text-white" href="/admin/product/addproduct">Add product</a></button>
+   <button type="button" class="btn btn-dark"><a class="text-decoration-none text-white" href="/admin/dashboard">Dashboard</a></button>
+    <br>
+    <br>
+  </div>
+
+
+  <table class="table" id="categorytable">
+    <thead>
+      <tr>
+        <th scope="col">No</th>
+        <th scope="col">product Name</th>
+        <th scope="col">Category</th>
+        <th scope="col">Description</th>
+        <th scope="col">Price</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Image</th>
         
-    
-    
-            
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+  
+      <tbody>
+        <% productData.forEach((element,index) => {%>
+          
+     
+        <tr>
+          <th scope="row"><%=index+1%></th>
+          <td><%=element.productName%></td>
+          <td><%=element.category%></td>
+          <td><%=element.description%></td>
+          <td><%=element.price%></td>
+          <td><%=element.quantity%></td>
+          <td><img src="/productImages/<%=element.images[0]%>" alt="" width="100px" height="100px"></td>
+          <td><button type="button" class="btn btn-primary"><a href="/admin/product/editproduct/<%=element.id%>" style="color: white; text-decoration: none;">Edit</a> </button> 
+            <button type="button" class="btn btn-danger"><a style="color: white; text-decoration: none;" href="/admin/product/deleteproduct/<%=element.id%>">Delete</a></button></td>
 
-            <script>
-              $(document).ready( function () {
-              $('#categorytable').DataTable();
-          });
-          </script>
-      </div><!-- End Page Title -->
+
+         
+        </tr>
+     <% });%>
+      </tbody>
+      
+  
+  
+          
+
+          <script>
+            $(document).ready( function () {
+            $('#categorytable').DataTable();
+        });
+        </script>
+
+</div>
+    
+     
 
 <%- include('../layout/admin/footer.ejs')%>
