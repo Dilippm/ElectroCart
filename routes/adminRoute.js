@@ -25,21 +25,14 @@ adminRoute.use(express.static(path.join(__dirname,'public')))
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination:function(req,file,cb){
-        cb(null,path.join(__dirname,'../public/productImages'),function(err,success){
-            if (err) {
-                throw err;
-            }
-
-        });
+        cb(null,path.join(__dirname,'../public/productImages'))
     },
     filename:function(req,file,cb){
             const name = Date.now()+'-'+file.originalname;
-            cb(null,name,function(err,success){
-                if (err) {
-                    throw err;
+            cb(null,name)
                 }
-            });
-    }
+            
+    
 });
 const upload = multer({storage:storage});
 
@@ -61,6 +54,8 @@ adminRoute.get('/product',auth.isLogin,productcontroller.loadProduct);
 adminRoute.get('/product/addproduct',auth.isLogin,productcontroller.addProduct);
 adminRoute.post('/product',upload.array('images',3),productcontroller.insertProduct);
 adminRoute.get('/product/deleteproduct/:id',productcontroller.deleteProduct);
+adminRoute.get('/product/editproduct/:id',productcontroller.editProduct);
+adminRoute.post('/product/editproduct/:id',upload.array('images',3),productcontroller.UpdateProduct)
 
 
 

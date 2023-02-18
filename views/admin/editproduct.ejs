@@ -6,7 +6,65 @@
 
 
 
+<main id="main" class="main">
+
+    <section>
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2 class="text-center">Edit Product</h2>
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <label for="">Product Name</label>
+                        <input type="text" name="productname" class="form-control" required value="<%= product.productName %>">
     
+                         <label for="">category</label>
+                         
+                        <select class="form-control" type="text" name="category" required >
+                            
+                            <option><%=product.category%></option>
+                            <% Category.forEach((element,index) => {%>
+                            <option><%=element.category%></option>
+                            <% });%>
+                        </select>
+                        
+    
+                       
+                         <label for="">Description</label>
+                        <input type="text" name="description" class="form-control" required value="<%= product.description %>">
+                          
+                        <label for="">Price</label>
+                        <input type="number" name="price" class="form-control" required value="<%= product.price %>">
+    
+                        <label for="">Quantity</label>
+                        <input type="number" name="quantity" class="form-control" required value="<%= product.quantity %>">
+    
+                         <div>
+                            <% product.images.forEach((element,index) => {%>
+                            <img src="/productImages/<%=element%>" alt="" width="50px" height="50px">
+                            <% });%>
+                         </div>
+    
+                        <label for="">Image</label>
+                        <input multiple type="file" name="images" class="form-control" >
+    
+                         
+                        
+                        <button type="submit" class="btn btn-success mt-4">Submit</button> 
+                        <% if(typeof message !=="undefined") { %>
+                            <h1 style="font-size: 14px;color: brown;"><%=message  %></h1>
+                  <%} %>
+           </form>
+                   
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+  
+
+    
+    </main><!-- End #main -->
     
     
 

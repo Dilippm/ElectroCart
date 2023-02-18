@@ -55,9 +55,46 @@ const deleteProduct =async(req,res)=>{
         console.log(error.message);
     }
 }
+const editProduct=async(req,res)=>{
+    try {
+        const productData=await product.findById(req.params.id);
+        const categoryData=await Category.find();
+        res.render('editproduct',{product:productData,Category:categoryData});
 
+    } catch (error) {
+        console.log(error.message);
+    }
+}
 
-  
+const UpdateProduct = async (req, res) => {
+  try {
+    const id = req.params.id;
+    let imgArray = [];
+
+    if (req.files.length > 0) {
+      for (let i = 0; i < req.files.length; i++) {
+        imgArray.push(req.files[i].filename);
+      }
+    }
+
+    const productData = {
+      productName: req.body.productname,
+      category: req.body.category,
+      description: req.body.description,
+      price: req.body.price,
+      quantity: req.body.quantity,
+    };
+
+    if (imgArray.length > 0) {
+      productData.images = imgArray;
+    }
+
+    await product.updateOne({ _id: id }, { $set: productData });
+    res.redirect("/admin/product");
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 module.exports={
   
     loadProduct,
@@ -65,6 +102,8 @@ module.exports={
     insertProduct,
   
     deleteProduct,
+    editProduct,
+    UpdateProduct
    
 
     
