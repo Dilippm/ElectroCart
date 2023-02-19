@@ -12,6 +12,7 @@ adminRoute.use(session({secret:config.sessionSecret}));
 const admincontroller=require('../controllers/admincontroller')
 const categorycontroller = require('../controllers/categorycontroller')
 const productcontroller = require('../controllers/productcontroller')
+const adminusercontroller = require('../controllers/adminusercontroller')
 
 
 adminRoute.set('view engine','ejs')
@@ -21,6 +22,8 @@ adminRoute.use(bodyparser.json())
 adminRoute.use(bodyparser.urlencoded({extended:true}));
 const path=require('path')
 adminRoute.use(express.static(path.join(__dirname,'public')))
+
+// multer for image upload
 
 const multer = require('multer');
 const storage = multer.diskStorage({
@@ -56,6 +59,10 @@ adminRoute.post('/product',upload.array('images',3),productcontroller.insertProd
 adminRoute.get('/product/deleteproduct/:id',productcontroller.deleteProduct);
 adminRoute.get('/product/editproduct/:id',productcontroller.editProduct);
 adminRoute.post('/product/editproduct/:id',upload.array('images',3),productcontroller.UpdateProduct)
+adminRoute.get('/user',adminusercontroller.loadUser);
+adminRoute.get('/user/delete/:id',adminusercontroller.deleteUser);
+
+
 
 
 
