@@ -18,32 +18,32 @@ const addProduct=async(req,res)=>{
     }
 }
 const insertProduct =async(req,res)=>{
-    try {
-        var arrImages=[];
-        for(let i=0;i<req.files.length;i++){
-            arrImages[i]= req.files[i].filename;
-        }
-         
-        const newProduct= new product({
-            productName:req.body.productName,
-            category:req.body.category,
-           
-            description:req.body.description,
-            price:req.body.price,
-            quantity:req.body.quantity,
-            images:arrImages
-        });
-      const productData = await  newProduct.save();
-      if(productData){
-        res.redirect('/admin/product');
-      }else{
-        res.render('addproduct',{message:'Failed to add new product'});
-
+  try {
+      var arrImages=[];
+      for(let i=0;i<req.files.length;i++){
+          arrImages[i]= req.files[i].filename;
       }
+       
+      const newProduct= new product({
+          productName:req.body.productName,
+          category:req.body.category,
+         
+          description:req.body.description,
+          price:req.body.price,
+          quantity:req.body.quantity,
+          images:arrImages
+      });
+    const productData = await  newProduct.save();
+    if(productData){
+      res.redirect('/admin/product');
+    }else{
+      res.render('addproduct',{message:'Failed to add new product'});
 
-    } catch (error) {
-        console.log(error.message);
     }
+
+  } catch (error) {
+      console.log(error.message);
+  }
 }
 
 const deleteProduct =async(req,res)=>{
@@ -95,6 +95,7 @@ const UpdateProduct = async (req, res) => {
     console.log(error.message);
   }
 };
+    
 module.exports={
   
     loadProduct,

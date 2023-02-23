@@ -2,6 +2,7 @@ const express=require('express')
 const userRoute=express();
 const session =require('express-session');
 
+//session
 const config = require('../config/config');
 userRoute.use(session({secret:config.sessionSecret}));
 
@@ -30,15 +31,22 @@ const path=require('path');
 userRoute.use(express.static(path.join(__dirname,'public')))
 
 //user get routers
-userRoute.get('/',usercontroller.loadHome);
-userRoute.get('/login',usercontroller.loadLogin);
-userRoute.get('/register',usercontroller.loadRegister);
 
+// userRoute.get('/',usercontroller.loadHome);
+userRoute.get('/',userauth.islogout,usercontroller.guest);
+userRoute.get('/userhome',userauth.islogin,usercontroller.userHome)
+
+userRoute.get('/login',userauth.islogout,usercontroller.loadLogin);
+userRoute.get('/register',userauth.islogout,usercontroller.loadRegister);
+userRoute.get('/logout',userauth.islogin,usercontroller.userLogout);
+userRoute.get('/productview/:id',usercontroller.productView)
+userRoute.get('/cart',usercontroller.loadCart);
 
 // user post routers
 
 userRoute.post('/register',usercontroller.uploadRegister);
 userRoute.post('/login',usercontroller.verifyLogin);
+userRoute.post('/logout',usercontroller.verifyLogin);
 
 
 module.exports=  userRoute;

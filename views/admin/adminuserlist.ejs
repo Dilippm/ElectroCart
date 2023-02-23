@@ -19,6 +19,7 @@
         <th scope="col">User Name</th>
         <th scope="col">Email</th>
         <th scope="col">Mobile</th>
+        <th scope="col">Status</th>
         
         <th scope="col">Actions</th>
         
@@ -33,17 +34,24 @@
             <td><%=user.name%></td>
             <td><%=user.email%></td>
             <td><%=user.mobile%></td>
+            <td><% if(user.status==true){ %>
+              <p style="color: red;">Blocked</p>
+              <%} else{%>
+              <p style="color: green;">Active</p> 
+            <%}%>
+            </td>
            
            
            
                 <td>
                    
-                    <button type="button" class="btn btn-danger"><a href="/admin/user/delete/<%= user._id %>" style="color: white; text-decoration: none;">Delete</a></button>
+                    <button type="button" class="btn btn-danger"><a href="/admin/user/blockuser/<%= user._id %>" style="color: white; text-decoration: none;">block</a></button>
+                    <button type="button" class="btn btn-success"><a href="/admin/user/unblockuser/<%= user._id %>" style="color: white; text-decoration: none;">unblock</a></button>
                   </td>
             
            
           </tr>
-        <% });%>
+        <% })%>
       </tbody>
       
   

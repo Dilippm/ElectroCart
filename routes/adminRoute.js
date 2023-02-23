@@ -56,11 +56,12 @@ adminRoute.post('/category/editcategory/:id',categorycontroller.editCategory);
 adminRoute.get('/product',auth.isLogin,productcontroller.loadProduct);
 adminRoute.get('/product/addproduct',auth.isLogin,productcontroller.addProduct);
 adminRoute.post('/product',upload.array('images',3),productcontroller.insertProduct);
-adminRoute.get('/product/deleteproduct/:id',productcontroller.deleteProduct);
-adminRoute.get('/product/editproduct/:id',productcontroller.editProduct);
+adminRoute.get('/product/deleteproduct/:id',auth.isLogin,productcontroller.deleteProduct);
+adminRoute.get('/product/editproduct/:id',auth.isLogin,productcontroller.editProduct);
 adminRoute.post('/product/editproduct/:id',upload.array('images',3),productcontroller.UpdateProduct)
-adminRoute.get('/user',adminusercontroller.loadUser);
-adminRoute.get('/user/delete/:id',adminusercontroller.deleteUser);
+adminRoute.get('/user',auth.isLogin,adminusercontroller.loadUser);
+adminRoute.get('/user/blockuser/:id',auth.isLogin,adminusercontroller.blockUser)
+adminRoute.get('/user/unblockuser/:id',auth.isLogin,adminusercontroller.unblockuser);
 
 
 

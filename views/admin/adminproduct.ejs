@@ -1,16 +1,17 @@
 <%- include('../layout/admin/header.ejs')%>
 
 <%- include('../layout/admin/navbar.ejs')%>
+<%- include('../layout/admin/sidebar.ejs')%>
 
 
 <div class="container">
   <div class="pagetitle" style="margin-top: 100px;">
-    <h1>Product</h1>
+    <h1><b>Products</b> </h1>
     
   </div>
   <div>
-   <button type="button" class="btn btn-primary"><a class="text-decoration-none text-white" href="/admin/product/addproduct">Add product</a></button>
-   <button type="button" class="btn btn-dark"><a class="text-decoration-none text-white" href="/admin/dashboard">Dashboard</a></button>
+   <button type="button" class="btn btn-success"><a class="text-decoration-none text-white" href="/admin/product/addproduct">Add product</a></button>
+   
     <br>
     <br>
   </div>
@@ -43,7 +44,7 @@
           <td><%=element.price%></td>
           <td><%=element.quantity%></td>
           <td><img src="/productImages/<%=element.images[0]%>" alt="" width="100px" height="100px"></td>
-          <td><button type="button" class="btn btn-primary"><a href="/admin/product/editproduct/<%=element.id%>" style="color: white; text-decoration: none;">Edit</a> </button> 
+          <td><button type="button" class="btn btn-primary"><a href="/admin/product/editproduct/<%=element.id%>" style="color: white; text-decoration: none; ">Edit</a> </button> 
             <button type="button" class="btn btn-danger"><a style="color: white; text-decoration: none;" href="/admin/product/deleteproduct/<%=element.id%>">Delete</a></button></td>
 
 
