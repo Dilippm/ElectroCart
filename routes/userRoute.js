@@ -41,12 +41,27 @@ userRoute.get('/register',userauth.islogout,usercontroller.loadRegister);
 userRoute.get('/logout',userauth.islogin,usercontroller.userLogout);
 userRoute.get('/productview/:id',usercontroller.productView)
 userRoute.get('/cart',usercontroller.loadCart);
+userRoute.get('/add-to-cart/:id',usercontroller.addToCart);
+userRoute.get('/deletecart/:id',usercontroller.deleteCart);
+
+userRoute.get('/profile',usercontroller.profile);
+userRoute.get('/address',usercontroller.addressView);
+userRoute.get('/edit-user',usercontroller.editUser);
+userRoute.get('/addAddress',usercontroller.addAddress);
+userRoute.get('/editAddress/:id',usercontroller.editaddress);
+userRoute.get('/removeAddress/:id',usercontroller.removeAddress)
+
 
 // user post routers
 
 userRoute.post('/register',usercontroller.uploadRegister);
 userRoute.post('/login',usercontroller.verifyLogin);
 userRoute.post('/logout',usercontroller.verifyLogin);
+userRoute.post('/edit-qty',usercontroller.editQty);
+userRoute.post('/editedProfile/:id',usercontroller.updateUser);
+userRoute.post('/addAddress',usercontroller.insertAddress);
+userRoute.post('/editAddress/:id',usercontroller.editedAddress);
+
 
 
 module.exports=  userRoute;

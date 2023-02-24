@@ -1,0 +1,197 @@
+<%- include('../layout/user/header') %>
+    <%- include('../layout/user/navbar') %>
+
+        <!-- Menu Toogle -->
+        <div class="menu-toggle">
+            <a href="#">
+                <i class="fa fa-bars"></i>
+                <span>Menu</span>
+            </a>
+        </div>
+        <!-- /Menu Toogle -->
+        </div>
+        </div>
+        <!-- /ACCOUNT -->
+        </div>
+        <!-- row -->
+        </div>
+        <!-- container -->
+        </div>
+        <!-- /MAIN HEADER -->
+        </header>
+        <!-- /HEADER -->
+
+        <!-- NAVIGATION -->
+        <nav id="navigation">
+            <!-- container -->
+            <div class="container">
+                <!-- responsive-nav -->
+                <div id="responsive-nav">
+                    <!-- NAV -->
+                    <ul class="main-nav nav navbar-nav">
+                        <li class="active"><a href="/">Home</a></li>
+
+
+
+
+                    </ul>
+                    <!-- /NAV -->
+                </div>
+                <!-- /responsive-nav -->
+            </div>
+            <!-- /container -->
+        </nav>
+        <!-- /NAVIGATION -->
+
+        <% if(cartProducts.item.length===0) { %>
+            <div class="container" style="display: flex; justify-content: center;">
+
+                <h1>Cart is empty</h1>
+            </div>
+
+            <% }else{ %>
+
+                 <div class="container-fluid">
+                     <div class="pagetitle" style="margin-top: 70px;">
+                         <!-- <h1><b>Cart</b> </h1>  -->
+
+                    </div>  
+
+
+
+                    <table class="table" id="categorytable">
+                        <thead>
+                            <tr>
+                                <th class="column-1" style="font-size: large;">Product Name</th>
+                                <th class="column-2" style="font-size: large;">Product Image</th>
+                                <th class="column-3" style="font-size: large;">Price</th>
+                                <th class="column-4" style="font-size: large;">Quantity</th>
+                                <th class="column-5" style="font-size: large;">Total</th>
+                                <th class="column-6" style="font-size: large;">Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% let total = 0 %>
+                            <% for (let key of cartProducts.item) { %>
+                                <tr class="table_row">
+                                    <td class="column-3">
+                                       <b><%= key.productId.productName %></b> 
+                                    </td>
+                                    <td class="column-1">
+                                        <div class="how-itemcart1">
+                                            <a href="/productview/<%= key.productId._id %>"
+                                                class="nk-image-box-1 nk-post-image">
+                                                <img src="/productImages/<%= key.productId.images[0] %>" width="100px"
+                                                    height="100px" alt="IMG">
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td class="column-3"> <b>₹. <%= key.productId.price %></b>
+                                    </td>
+                                    <td class="column-4">
+                                        <div class="d-flex justify-content-center">
+                                            <input style="margin-left: 1rem;" class="qty" type="number" name="qty"
+                                                value="<%= key.qty %>" min="1" max="<%= key.productId.quantity %>">
+                                            <input type="hidden" id="productId" value="<%=key.productId._id %>">
+                                        </div>
+                                    </td>
+                                    <td class="column-5"><b>₹. <%= key.qty * key.productId.price %> </b>
+                                    </td>
+                                    <td class="nk-product-cart-remove"> <button class="btn btn-danger"><a
+                                                href="/deletecart/<%= key.productId._id %>" style="color: white; "><span
+                                                    class="material-symbols-outlined">Remove</span></a></button> </td>
+                                </tr>
+                               
+                               
+    <% } %>
+   
+    <tr>
+        <td colspan="3"></td>
+        <td colspan="3"></td>
+      </tr>
+        <tr>
+            <td colspan="3"></td>
+            <td colspan="2" style="text-align:center"><strong>Total:</strong></td>
+            <td style="text-align:center"><strong>₹. <%= cartProducts.totalPrice %> </strong> </td>
+        </tr>
+        <tr>
+            <td colspan="6" style="text-align:center">
+                <a href="/checkout" class="btn btn-warning" style="color: black;"> <b>Checkout</b> </a>
+            </td>
+        </tr>
+                            
+                        </tbody>
+                      
+                        
+
+
+
+
+                    </table>
+
+
+
+
+                </div>
+
+
+                <% } %>
+                
+
+
+                    <script>
+                        const qty = document.querySelectorAll('.qty')
+                        const totalCart = document.querySelector('.totalCart')
+                        const totalPrice = document.querySelector('#totalPrice')
+                        const finalPrice = document.querySelector('#finalPrice')
+
+                        const updateCartTotal = () => {
+                            const items = document.querySelectorAll('.table_row')
+                            let total = 0
+                            for (let item of items) {
+                                const price = parseInt(item.querySelector('.column-3').innerText.slice(2))
+                                const qty = parseInt(item.querySelector('.qty').value)
+                                if (!isNaN(price) && !isNaN(qty)) {
+                                    total += price * qty
+                                    item.querySelector('.column-5').innerText = `₹. ${price * qty}`
+                                }
+                            }
+                            totalCart.innerText = `₹. ${total}`
+                            totalPrice.innerText = `₹. ${total}`
+                            finalPrice.innerText = `₹. ${total}`
+                        }
+
+
+                        const qtyHandler = async (e) => {
+                            try {
+                                const productId = e.target.parentElement.children[1].value
+                                const data = { qty: e.target.value }
+                                const response = await fetch(`/edit-qty?id=${productId}`, {
+                                    method: 'post',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify(data)
+                                })
+                                const { totalPrice, price } = await response.json()
+
+                                // Update the item price in the UI
+                                const item = e.target.closest('.table_row')
+                                const qty = parseInt(e.target.value)
+                                const itemPriceElem = item.querySelector('.column-5')
+                                itemPriceElem.innerText = `₹. ${price * qty}`
+
+                                updateCartTotal()
+                            } catch (error) {
+                                console.log(error.message)
+                            }
+                        }
+
+
+                        qty.forEach(q => {
+                            q.addEventListener('change', qtyHandler)
+                        })
+                    </script>
+
+
+
+
+                    <%- include('../layout/user/footer') %>
