@@ -1,0 +1,158 @@
+<%- include('../layout/user/header.ejs')%>
+<%- include('../layout/user/navbar.ejs')%>
+
+
+
+								<!-- Menu Toogle -->
+								<div class="menu-toggle">
+									<a href="#">
+										<i class="fa fa-bars"></i>
+										<span>Menu</span>
+									</a>
+								</div>
+								<!-- /Menu Toogle -->
+							</div>
+						</div>
+						<!-- /ACCOUNT -->
+					</div>
+					<!-- row -->
+				</div>
+				<!-- container -->
+			</div>
+			<!-- /MAIN HEADER -->
+		</header>
+		<!-- /HEADER -->
+
+		<!-- NAVIGATION -->
+		<nav id="navigation">
+			<!-- container -->
+			<div class="container">
+				<!-- responsive-nav -->
+				<div id="responsive-nav">
+					<!-- NAV -->
+					<ul class="main-nav nav navbar-nav">
+						<li class="active"><a href="/">Home</a></li>
+						
+						
+						
+						
+					</ul>
+					<!-- /NAV -->
+				</div>
+				<!-- /responsive-nav -->
+			</div>
+			<!-- /container -->
+		</nav>
+		<!-- /NAVIGATION -->
+
+
+        
+		<!-- SECTION -->
+		<div class="section">
+			<form action="" method="post">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+                <% if(typeof userdetails!=='undefined'){ %>
+                <% if(typeof datas!=='undefined'){ %>
+				<div class="row">
+
+					<div class="col-md-7">
+						<!-- Billing Details -->
+						<div class="billing-details">
+							<div class="section-title">
+								<h3 class="title">Shipping address</h3>
+							</div>
+							<div class="form-group">
+								<input class="input" type="text" name="first-name" placeholder="<%= userdetails.name%> ">
+							</div>
+							
+							
+                            <% if(addressDetails.length > 0) { %>
+								<h4 style="margin-bottom: 20px;">Select shipping address:</h4>
+								<% for(var i=0; i<addressDetails.length; i++) { %>
+								  <div class="form-check" style="padding: 20px;">
+									<input class="form-check-input" type="radio" name="address" id="shipping-address<%=i%>" value="<%=addressDetails[i]._id%>">
+									<label class="form-check-label" for="shipping-address<%=i%>">
+									  <%=addressDetails[i].houseName%>, <%=addressDetails[i].street%>, <%=addressDetails[i].district%>, <%=addressDetails[i].country%> - <%=addressDetails[i].pincode%>
+									</label>
+								  </div>
+								<% } %>
+							  <% } %>
+							<button style="margin-top: 20px;"><a href="/addAddress">Add address</a></button>
+						</div>
+						<!-- /Billing Details -->
+
+						
+
+						
+					</div>
+
+					<!-- Order Details -->
+					<div class="col-md-5 order-details">
+						<div class="section-title text-center">
+							<h3 class="title">Your Order</h3>
+						</div>
+						<div class="order-summary">
+							<div class="order-col">
+								<div><strong>PRODUCT</strong></div>
+								<div><strong>TOTAL</strong></div>
+							</div>
+                            <% for (let key of cartProducts) { %>
+								<input type="hidden" name="proId" value="<%= key.product._id %>">
+							<div class="order-products">
+								<div class="order-col">
+									<div><%= key.product.productName %></div>
+									<div>₹. <%=key.productTotalPrice %></div>
+									<input type="hidden" name="proQ" value="  <%=key.quantity %>">  
+									<input type="hidden" name="qntyPrice" value="<%=key.productTotalPrice %>"> 
+								</div>
+								
+							</div>
+                            <% } %>
+							<div class="order-col">
+								<div>Shiping</div>
+								<div><strong>FREE</strong></div>
+							</div>
+							<div class="order-col">
+								<div><strong>TOTAL</strong></div>
+								<div><strong class="order-total">₹. <%= datas.totalPrice %></strong></div>
+								<input type="hidden" name="total" value="<%=datas.totalPrice %>"> 
+							</div>
+						</div>
+						<label for="NAME" class="small text-muted mb-1">Payment
+							Method</label><br><br>
+						<div class="form-group">
+							<input type="radio" name="test" value="COD"> Cash on
+							delivery<br><br>
+						</div>
+						<div class="form-group">
+							<input type="radio" name="test" value="UPI">UPI<br><br>
+						</div>
+						<!-- <div class="input-checkbox">
+							<input type="checkbox" id="terms">
+							<label for="terms">
+								<span></span>
+								I've read and accept the <a href="#">terms & conditions</a>
+							</label>
+						</div> -->
+						<div class="row mb-md-5">
+							<div class="col">
+								<button type="submit" name="" id=""
+									class="btn  btn-lg btn-block ">Place Order</button>
+							</div>
+						</div>
+			</div>
+					</div>
+					<!-- /Order Details -->
+				</div>
+                <%} %>
+                <%} %>
+				<!-- /row -->
+			</div>
+			</form>
+			<!-- /container -->
+		</div>
+		<!-- /SECTION -->
+
+<%- include('../layout/user/footer.ejs')%>

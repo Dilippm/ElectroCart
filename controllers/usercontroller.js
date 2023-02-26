@@ -1,6 +1,7 @@
 const user = require('../models/userData');
 const product = require('../models/productData');
 const category = require('../models/categoryData');
+const order= require('../models/orderData')
 
 const bcrypt = require('bcrypt');
 const { request } = require('../routes/userRoute');
@@ -20,7 +21,7 @@ const securePassword = async (password) => {
 
 const guest = async (req, res) => {
     try {
-        console.log("iam guest");
+        
         const data = await product.find();
         const cat = await category.find();
         const users = false;
@@ -36,7 +37,7 @@ const userHome = async (req, res) => {
             const id = req.session.user_id
             const users = true;
             const data = await product.find();
-            console.log(data);
+            
             const cata = await category.find();
             const use = await user.findOne({ _id: id });
 
@@ -152,7 +153,7 @@ const productView = async (req, res) => {
         console.log(error.message);
     }
 }
-const loadCart = async (req, res) => {
+/*const loadCart = async (req, res) => {
     try {
         if (req.session.user_id) {
             const users = true;
@@ -233,7 +234,7 @@ const deleteCart = async (req, res) => {
         console.log(error)
     }
 }
-
+*/
 const profile= async(req,res)=>{
     try {
         
@@ -270,7 +271,7 @@ const editUser = async(req,res)=>{
 }
 const updateUser = async(req,res)=>{
     try {
-        console.log(req.body);
+       
         if (req.session.user_id) {
           const update = await user.updateOne({ _id:req.session.user_id}, {
             $set: {
@@ -327,7 +328,7 @@ const addAddress =async(req,res)=>{
 //insert address
 const insertAddress = async (req, res) => {
     try {
-      console.log(req.body);
+      
       if (req.session.user_id) {
   
   
@@ -421,6 +422,35 @@ const removeAddress = async(req,res)=>{
     }
 }
 
+/*const checkOut = async (req, res) => {
+    try {
+      if (req.session.user_id) {
+        const userId = req.session.user_id;
+        const userdetails = await user.findOne({ _id: userId });
+        const data = await user.findOne({ _id: userdetails._id });
+        const use = await user.findById({ _id: userId });
+        const completeUser = await use.populate("cart.product");
+        const cartProducts = completeUser.cart;
+        const addressDetail = data.address; // get the address array from data
+        
+        res.render("checkout", {
+          userdetails: userdetails,
+          datas: data,
+          users: true,
+          use: use,
+          cartProducts: cartProducts,
+          addressDetails: addressDetail // pass addressDetails to the template
+        });
+      } else {
+        res.redirect("/login");
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };*/
+  
+ 
+  
 module.exports = {
     guest,
     userHome,
@@ -431,12 +461,7 @@ module.exports = {
     verifyLogin,
     userLogout,
     productView,
-    loadCart,
-
-    addToCart,
-    deleteCart,
-    editQty,
-
+   
     profile,
     editUser,
     updateUser,
@@ -445,7 +470,9 @@ module.exports = {
     insertAddress,
     editaddress,
     editedAddress,
-    removeAddress
+    removeAddress,
+   
+   
 
 
 
