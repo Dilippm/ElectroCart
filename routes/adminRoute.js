@@ -7,12 +7,20 @@ const nocache =require('nocache')
 adminRoute.use(nocache());
 
 const session =require("express-session")
-adminRoute.use(session({secret:config.sessionSecret}));
+adminRoute.use(session({secret:config.sessionSecret,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      
+      maxAge: 1000 * 60 * 60 * 24, // Set session cookie to expire in 1 day
+    },
+}));
 
 const admincontroller=require('../controllers/admincontroller')
 const categorycontroller = require('../controllers/categorycontroller')
 const productcontroller = require('../controllers/productcontroller')
 const adminusercontroller = require('../controllers/adminusercontroller')
+const adminordercontroller= require('../controllers/adminordercontroller');
 
 
 adminRoute.set('view engine','ejs')
@@ -62,6 +70,9 @@ adminRoute.post('/product/editproduct/:id',upload.array('images',3),productcontr
 adminRoute.get('/user',auth.isLogin,adminusercontroller.loadUser);
 adminRoute.get('/user/blockuser/:id',auth.isLogin,adminusercontroller.blockUser)
 adminRoute.get('/user/unblockuser/:id',auth.isLogin,adminusercontroller.unblockuser);
+
+adminRoute.get('/order',auth.isLogin,adminordercontroller.viewOrder);
+adminRoute.post('/order/change-order-status',adminordercontroller.dropdown);
 
 
 

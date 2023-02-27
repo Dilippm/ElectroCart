@@ -1,0 +1,83 @@
+<%- include('../layout/admin/header.ejs')%>
+<%- include('../layout/admin/navbar.ejs')%>
+<%- include('../layout/admin/sidebar.ejs')%>
+
+
+<div class="container">
+    <div class="pagetitle" style="margin-top: 100px;">
+      <h1><b>Orders</b> </h1>
+      
+    </div>
+  
+  
+  
+    <table class="table" id="ordertable">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Order Id</th>
+          <th>Product Name</th>
+          <th>User</th>
+          <th>Address</th>
+          
+          <th>Payment</th>
+          <th>Price</th>
+          <th>Date</th>
+
+          <th>status</th>
+          
+         
+        </tr>
+      </thead>
+    
+      <tbody>
+        <% if(orderDetail.length > 0){ %>
+          <% for(let i=0; i<orderDetail.length; i++){ %>
+            <tr>
+              <td> <%= i+1 %></td>
+              <td><%= orderDetail[i].orderId %></td>
+              <td> 
+                <% order[i].product.forEach((element)=>{ %>
+                  #<%= element.productId.productName %> (x <%= element.quantity %>)<br>
+                <% })%>
+              </td>
+              <td><%= order[i].userId.name %></td>
+              <td><%= order[i].deliveryAddress %></td>
+              <td><%= order[i].paymentType %></td>
+              <td><%= order[i].total %></td>
+              <td><%= order[i].date %></td>
+              <td>
+                <form action="/admin/order/change-order-status" method="post">
+                  <input type="hidden" name="orderId" value="<%= orderDetail[i].orderId %>">
+                  <select name="status" onchange="this.form.submit()">
+                    <option  value="Pending" <%= orderDetail[i].status === "Pending" ? "selected" : "" %>>Pending</option>
+                    <option value="Processing" <%= orderDetail[i].status === "Processing" ? "selected" : "" %>>Processing</option>
+                    <option value="Shipped" <%= orderDetail[i].status === "Shipped" ? "selected" : "" %>>Shipped</option>
+                    <option value="Delivered" <%= orderDetail[i].status === "Delivered" ? "selected" : "" %>>Delivered</option>
+                  </select>
+                </form>
+              </td>
+            </tr>
+          <% } %>
+        <% } %>
+      </tbody>
+      
+      
+    
+    
+      </table>
+           
+  
+  </div>
+  
+  <script>
+
+    $(document).ready(function () {
+      $('#ordertable').DataTable();
+    });
+  </script>
+    
+
+
+<%- include('../layout/admin/footer.ejs')%>
+

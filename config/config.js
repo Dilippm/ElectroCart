@@ -1,6 +1,8 @@
 const sessionSecret="secretkey";
+const usersessionSecret="usersecretkey";
 
 
 module.exports={
-    sessionSecret
+    sessionSecret,
+    usersessionSecret
 }

@@ -45,7 +45,7 @@ const loadDashboard=async(req,res)=>{
 
 const adminLogout=async(req,res)=>{
 try {
-    req.session.admin_id =null;
+    req.session.admin_id=null
     res.redirect('/admin')
 } catch (error) {
     console.log(error.message)

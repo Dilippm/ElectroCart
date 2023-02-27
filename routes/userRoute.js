@@ -1,13 +1,24 @@
 const express=require('express')
 const userRoute=express();
 const session =require('express-session');
+// middleware
+const userauth= require("../middlewares/userauth");
+const nocache =require('nocache')
+userRoute.use(nocache());
 
 //session
 const config = require('../config/config');
-userRoute.use(session({secret:config.sessionSecret}));
+userRoute.use(session({secret:config.usersessionSecret,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      
+      maxAge: 1000 * 60 * 60 * 24, // Set session cookie to expire in 1 day
+    },
+}));
 
-// middleware
-const userauth= require("../middlewares/userauth");
+
+
 
 const bodyparser=require('body-parser')
 //controller
@@ -54,7 +65,8 @@ userRoute.get('/addAddress',usercontroller.addAddress);
 userRoute.get('/editAddress/:id',usercontroller.editaddress);
 userRoute.get('/removeAddress/:id',usercontroller.removeAddress);
 userRoute.get('/checkout',ordercontroller.loadCheckOut);
-userRoute.post('/checkout',ordercontroller.successLoad);
+
+userRoute.get('/orderlist',usercontroller.viewOrders);
 
 
 
@@ -69,6 +81,7 @@ userRoute.post('/editedProfile/:id',usercontroller.updateUser);
 userRoute.post('/addAddress',usercontroller.insertAddress);
 userRoute.post('/editAddress/:id',usercontroller.editedAddress);
 userRoute.post ('/change-Product-Quantity',cartcontroller.changeQuantity);
+userRoute.post('/checkout',ordercontroller.successLoad);
 
 
 

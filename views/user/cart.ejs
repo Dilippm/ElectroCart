@@ -147,6 +147,9 @@
         function changeQuantity(proId, count, ptotal) {
           let quantity = parseInt(document.getElementById(proId).innerHTML)
           count = parseInt(count)
+          if(quantity<=1 && count==-1){
+
+}else{
   
           $.ajax({
   
@@ -165,6 +168,7 @@
             }
           })
         }
+    }
       </script>
            
 

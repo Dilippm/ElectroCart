@@ -123,7 +123,7 @@ const uploadRegister = async (req, res) => {
 // user logout 
 const userLogout = async (req, res) => {
     try {
-        req.session.user_id = null
+        req.session.user_id=null;
         res.render('login');
     } catch (error) {
         console.log(error.message);
@@ -153,88 +153,7 @@ const productView = async (req, res) => {
         console.log(error.message);
     }
 }
-/*const loadCart = async (req, res) => {
-    try {
-        if (req.session.user_id) {
-            const users = true;
-            const userid = req.session.user_id;
-            const use = await user.findById({ _id: userid });
-            const completeUser = await use.populate('cart.item.productId');
-            const cartProducts = completeUser.cart; // define cartProducts here
-            res.render('cart', { id: userid, cartProducts, users, use });
-            console.log(cartProducts); // cartProducts is now defined 
-        } else {
-            res.redirect('/login');
-        }
-    } catch (error) {
-        console.log(error.message);
-    }
-};
 
-const addToCart = async (req, res) => {
-    try {
-        const productId = req.params.id
-        const userid = req.session.user_id;
-        if (userid) {
-            const users = true;
-            const use = await user.findById({ _id: userid })
-            const productData = await product.findById({ _id: productId })
-            await use.addToCart(productData, users, use) 
-            res.redirect('/cart')
-        } else {
-            res.redirect('/login')
-        }
-    } catch (error) {
-        console.log(error.message)
-    }
-}
-const editQty = async (req, res) => {
-    try {
-      const id = req.query.id;
-      const qty = parseInt(req.body.qty);
-      const userSession = req.session;
-      const userData = await user.findById(userSession.user_id);
-  
-      // Find the index of the cart item with the given ID
-      const itemIndex = userData.cart.item.findIndex((item) => item.productId == id);
-  
-      if (itemIndex < 0) {
-        // The item is not in the cart, return an error response
-        return res.status(400).json({ error: 'Item not found in cart' });
-      }
-  
-      // Update the quantity of the item and save the user data
-      userData.cart.item[itemIndex].qty = qty;
-  
-      // Update the total price of the cart
-      userData.cart.totalPrice = userData.cart.item.reduce((total, item) => {
-        return total + item.price * item.qty;
-      }, 0);
-  
-      await userData.save();
-  
-      // Return the new total price in the response
-      res.json({ totalPrice: userData.cart.totalPrice });
-    } catch (error) {
-      console.log(error.message);
-      res.status(500).json({ error: 'Server error' });
-    }
-  };
-  
-  
-
-const deleteCart = async (req, res) => {
-    try {
-        const productId = req.params.id
-
-        const userData = await user.findById({ _id: req.session.user_id })
-        userData.removeFromCart(productId)
-        res.redirect('/cart')
-    } catch (error) {
-        console.log(error)
-    }
-}
-*/
 const profile= async(req,res)=>{
     try {
         
@@ -422,34 +341,26 @@ const removeAddress = async(req,res)=>{
     }
 }
 
-/*const checkOut = async (req, res) => {
-    try {
-      if (req.session.user_id) {
-        const userId = req.session.user_id;
-        const userdetails = await user.findOne({ _id: userId });
-        const data = await user.findOne({ _id: userdetails._id });
-        const use = await user.findById({ _id: userId });
-        const completeUser = await use.populate("cart.product");
-        const cartProducts = completeUser.cart;
-        const addressDetail = data.address; // get the address array from data
-        
-        res.render("checkout", {
-          userdetails: userdetails,
-          datas: data,
-          users: true,
-          use: use,
-          cartProducts: cartProducts,
-          addressDetails: addressDetail // pass addressDetails to the template
-        });
-      } else {
-        res.redirect("/login");
-      }
-    } catch (error) {
-      console.log(error.message);
+const viewOrders = async (req, res) => {
+  try {
+    if (req.session.user_id) {
+      const users = true;
+      const userId = req.session.user_id;
+      const userDetails = await user.findOne({ _id: userId });
+      const orderDetails = await order.find({ userId: userId }).populate('product.productId');
+      res.render('orderlist', {
+        users,
+        use: await user.findById(userId),
+        userdetails: userDetails,
+        orderDetail: orderDetails
+      });
+    } else {
+      res.redirect('/login');
     }
-  };*/
-  
- 
+  } catch (error) {
+    console.log(error.message);
+  }
+};
   
 module.exports = {
     guest,
@@ -471,7 +382,7 @@ module.exports = {
     editaddress,
     editedAddress,
     removeAddress,
-   
+  viewOrders
    
 
 

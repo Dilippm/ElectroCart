@@ -117,7 +117,7 @@ const changeQuantity = async (req, res) => {
     try {
       if (req.session.user_id) {
   
-        const price1 = req.body.ptotal
+       // const price1 = req.body.ptotal
         const prodId = req.body.product
         const productdetails = await product.findOne({ _id: prodId })
   
