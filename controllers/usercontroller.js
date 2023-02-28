@@ -123,7 +123,7 @@ const uploadRegister = async (req, res) => {
 // user logout 
 const userLogout = async (req, res) => {
     try {
-        req.session.user_id=null;
+        req.session.user_id =null;
         res.render('login');
     } catch (error) {
         console.log(error.message);

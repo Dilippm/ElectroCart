@@ -31,8 +31,13 @@
           <th scope="row"><%=index+1%></th>
           <td><%=element.category%></td>
           <td><%=element.description%></td>
-          <td><button type="button" class="btn btn-primary"><a href="/admin/category/editcategory/<%=element.id%>" style="color: white; text-decoration: none;">Edit</a> </button> 
-            <button type="button" class="btn btn-danger"><a style="color: white; text-decoration: none;" href="/admin/category/deletecategory/<%=element.id%>">Delete</a></button></td>
+          <td><a href="/admin/category/editcategory/<%=element.id%>" style="color: white; text-decoration: none;">
+            <i class="fa-solid fa-user-pen" style="padding-right: 10px; color: blue;"></i>
+          </a>
+            <a style="color: white; text-decoration: none;" href="/admin/category/deletecategory/<%=element.id%>">
+              <i class="fas fa-trash" style="padding-right: 10px; color: red; "></i>
+            </a>
+          </td>
 
 
          

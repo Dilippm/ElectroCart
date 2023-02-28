@@ -15,10 +15,10 @@
       <thead>
         <tr>
           <th>No.</th>
-          <th>Order Id</th>
+         
           <th>Product Name</th>
           <th>User</th>
-          <th>Address</th>
+      
           
           <th>Payment</th>
           <th>Price</th>
@@ -35,17 +35,20 @@
           <% for(let i=0; i<orderDetail.length; i++){ %>
             <tr>
               <td> <%= i+1 %></td>
-              <td><%= orderDetail[i].orderId %></td>
+             
               <td> 
                 <% order[i].product.forEach((element)=>{ %>
-                  #<%= element.productId.productName %> (x <%= element.quantity %>)<br>
+               
+                  <%= element.productId.productName %> (x <%= element.quantity %>)<br>
+                  <% console.log(element.productId.productName); %>
                 <% })%>
               </td>
               <td><%= order[i].userId.name %></td>
-              <td><%= order[i].deliveryAddress %></td>
+          
               <td><%= order[i].paymentType %></td>
               <td><%= order[i].total %></td>
-              <td><%= order[i].date %></td>
+              <td><%= new Date(order[i].date).toLocaleDateString() %></td>
+
               <td>
                 <form action="/admin/order/change-order-status" method="post">
                   <input type="hidden" name="orderId" value="<%= orderDetail[i].orderId %>">
