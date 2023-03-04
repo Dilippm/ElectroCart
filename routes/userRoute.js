@@ -6,16 +6,6 @@ const userauth= require("../middlewares/userauth");
 const nocache =require('nocache')
 userRoute.use(nocache());
 
-//session
-const config = require('../config/config');
-userRoute.use(sessions({secret:config.usersessionSecret,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      
-      maxAge: 1000 * 60 * 60 * 24, // Set session cookie to expire in 1 day
-    },
-}));
 
 
 
@@ -45,7 +35,7 @@ userRoute.use(express.static(path.join(__dirname,'public')))
 
 //user get routers
 
-// userRoute.get('/',usercontroller.loadHome);
+
 userRoute.get('/',userauth.islogout,usercontroller.guest);
 userRoute.get('/userhome',userauth.islogin,usercontroller.userHome)
 
@@ -67,13 +57,21 @@ userRoute.get('/removeAddress/:id',usercontroller.removeAddress);
 userRoute.get('/checkout',ordercontroller.loadCheckOut);
 
 userRoute.get('/orderlist',usercontroller.viewOrders);
+userRoute.get('/details/:id',usercontroller.orderDetails);
+
+
+
 
 
 
 
 // user post routers
 
-userRoute.post('/register',usercontroller.uploadRegister);
+userRoute.post('/register',usercontroller.verifySignup)
+
+
+userRoute.post('/verifyotp',usercontroller.verifyOtp)
+
 userRoute.post('/login',usercontroller.verifyLogin);
 userRoute.post('/logout',usercontroller.verifyLogin);
 
@@ -82,6 +80,8 @@ userRoute.post('/addAddress',usercontroller.insertAddress);
 userRoute.post('/editAddress/:id',usercontroller.editedAddress);
 userRoute.post ('/change-Product-Quantity',cartcontroller.changeQuantity);
 userRoute.post('/checkout',ordercontroller.successLoad);
+userRoute.post('/cancel-order',usercontroller.cancelOrder);
+
 
 
 

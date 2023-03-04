@@ -43,7 +43,10 @@ const userData= new mongoose.Schema({
         }
     ,
     address: [
-        {
+        {name: {
+          type: String,
+          required: true
+        },
           houseName: {
             type: String,
             required: true

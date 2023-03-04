@@ -13,17 +13,19 @@
             <div class="row">
                 <div class="col-md-6">
                     <h2 class="text-center">Edit Product</h2>
-                    <form action="" method="post" enctype="multipart/form-data">
+                    <form action="/admin/product/editproduct/<%=product._id%>" method="post" enctype="multipart/form-data">
                         <label for="">Product Name</label>
-                        <input type="text" name="productname" class="form-control" required value="<%= product.productName %>">
+                        <input type="text" name="productName" class="form-control" required value="<%= product.productName %>">
     
-                         <label for="">category</label>
+                         <label for="">Category</label>
                          
-                        <select class="form-control" type="text" name="category" required >
+                        <select class="form-control" name="category" required >
                             
-                            <option><%=product.category%></option>
-                            <% Category.forEach((element,index) => {%>
-                            <option><%=element.category%></option>
+                            <option value="<%= product.category._id%>" selected><%=product.category.category%></option>
+                            <% categories.forEach((element,index) => {%>
+                            <% if (element._id != product.category._id) { %>
+                            <option value="<%= element._id %>"><%=element.category%></option>
+                            <% } %>
                             <% });%>
                         </select>
                         
@@ -33,10 +35,10 @@
                         <input type="text" name="description" class="form-control" required value="<%= product.description %>">
                           
                         <label for="">Price</label>
-                        <input type="number" name="price" class="form-control" required value="<%= product.price %>">
+                        <input type="number" name="price" class="form-control" required value="<%= product.price %>" min="0">
     
                         <label for="">Quantity</label>
-                        <input type="number" name="quantity" class="form-control" required value="<%= product.quantity %>">
+                        <input type="number" name="quantity" class="form-control" required value="<%= product.quantity %>" min="0">
     
                          <div>
                             <% product.images.forEach((element,index) => {%>
@@ -44,8 +46,8 @@
                             <% });%>
                          </div>
     
-                        <label for="">Image</label>
-                        <input multiple type="file" name="images" class="form-control" >
+                        <label for="">Images</label>
+                        <input multiple type="file" name="images" class="form-control" accept="image/*" >
     
                          
                         
@@ -59,7 +61,7 @@
             </div>
         </div>
     </section>
-
+    
 
   
 

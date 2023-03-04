@@ -103,23 +103,24 @@
 							
 							</div>
 							<div>
-								<h3 class="product-price">₹ <%=productdetails.price%> </h3>
-								<span class="product-available">In Stock</span>
+								<h3 class="product-price">₹ <%=productdetails.price%> <del class="product-old-price">₹ <%= (productdetails.price * 1.05).toFixed(2) %></del> </h3>
+								<span class="product-available">
+									<% if (productdetails.quantity > 0) { %>
+									  In Stock
+									<% } else { %>
+									  Out of Stock
+									<% } %>
+								  </span>
+								  
 							</div>
 							<p><%=productdetails.description%> </p>
 
 							
 							<div class="add-to-cart">
-								<div class="qty-label">
-									Qty
-									<div class="input-number">
-										<input type="number">
-										<span class="qty-up">+</span>
-										<span class="qty-down">-</span>
-									</div>
-								</div>
 								
-								<button><a href="/add-to-cart/<%= productdetails._id %>" class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</a></button>
+									<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> <a href="/add-to-cart/<%= productdetails._id %>" style="color: black;">add to cart</a> </button>
+								
+	
 							</div>
 
 							<ul class="product-btns">
@@ -129,7 +130,7 @@
 
 							<ul class="product-links">
 								<li>Category:</li>
-								<li><a href="#"><%=productdetails.category%></a></li>
+								<li><a href="#"><%=productdetails.category.category%></a></li>
 							
 							</ul>
 
@@ -156,7 +157,7 @@
 								<div id="tab1" class="tab-pane fade in active">
 									<div class="row">
 										<div class="col-md-12">
-											<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+											<p><%=productdetails.description%></p>
 										</div>
 									</div>
 								</div>

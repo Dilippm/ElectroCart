@@ -6,15 +6,15 @@ const auth = require('../middlewares/auth')
 const nocache =require('nocache')
 adminRoute.use(nocache());
 
-const session =require("express-session")
-adminRoute.use(session({secret:config.sessionSecret,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
+// const session =require("express-session")
+// adminRoute.use(session({secret:config.sessionSecret,
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: {
       
-      maxAge: 1000 * 60 * 60 * 24, // Set session cookie to expire in 1 day
-    },
-}));
+//       maxAge: 1000 * 60 * 60 * 24, // Set session cookie to expire in 1 day
+//     },
+// }));
 
 const admincontroller=require('../controllers/admincontroller')
 const categorycontroller = require('../controllers/categorycontroller')
@@ -67,12 +67,14 @@ adminRoute.post('/product',upload.array('images',3),productcontroller.insertProd
 adminRoute.get('/product/deleteproduct/:id',auth.isLogin,productcontroller.deleteProduct);
 adminRoute.get('/product/editproduct/:id',auth.isLogin,productcontroller.editProduct);
 adminRoute.post('/product/editproduct/:id',upload.array('images',3),productcontroller.UpdateProduct)
+adminRoute.get('/product/viewdetails/:id',productcontroller.viewdDetails)
 adminRoute.get('/user',auth.isLogin,adminusercontroller.loadUser);
 adminRoute.get('/user/blockuser/:id',auth.isLogin,adminusercontroller.blockUser)
 adminRoute.get('/user/unblockuser/:id',auth.isLogin,adminusercontroller.unblockuser);
 
 adminRoute.get('/order',auth.isLogin,adminordercontroller.viewOrder);
 adminRoute.post('/order/change-order-status',adminordercontroller.dropdown);
+adminRoute.get('/order/detail/:id',adminordercontroller.orderDetails);
 
 
 

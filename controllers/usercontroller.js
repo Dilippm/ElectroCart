@@ -3,6 +3,11 @@ const product = require('../models/productData');
 const category = require('../models/categoryData');
 const order= require('../models/orderData')
 
+require('dotenv').config();
+const accountsid = process.env.TWILIO_ACCOUNT_SID;
+const authtoken = process.env.TWILIO_AUTH_TOKEN;
+const client = require("twilio")(accountsid, authtoken);
+
 const bcrypt = require('bcrypt');
 const { request } = require('../routes/userRoute');
 
@@ -92,34 +97,108 @@ const loadRegister = async (req, res) => {
         console.log(error.message);
     }
 }
-//register page post
+ //register page post
 
-const uploadRegister = async (req, res) => {
+// const uploadRegister = async (req, res) => {
+//     try {
+//         const spassword = await securePassword(req.body.password);
+//         const existingUser = await user.findOne({ $or: [{ email: req.body.email }, { mobile: req.body.mobile }] });
+//         if (existingUser) {
+//             res.render('userregister', { message: "User already exists with this email or mobile number" });
+//         } else {
+//             const newUser = new user({
+//                 name: req.body.name,
+//                 email: req.body.email,
+//                 password: spassword,
+//                 mobile: req.body.mobile,
+
+//             });
+//             const userData = await newUser.save();
+//             if (userData) {
+//                 req.session.user_id = userData.id;
+//                 res.redirect('/userhome')
+//             } else {
+//                 res.render('userregister', { message: "Registration failed" });
+//             }
+//         }
+//     } catch (error) {
+//         console.log(error.message);
+//     }
+// }
+
+//verify signup
+
+const verifySignup = async (req, res, next) => {
+
+  req.session.userdata = req.body
+  const found = await user.findOne({ name: req.body.name })
+  if (found) {
+    res.render('userregister', { message: "username already exist ,try another" });
+  }
+  else if (req.body.name == ''  || req.body.email == '' || req.body.password == '' || req.body.mobile == '') {
+    res.render('signup', { message: "All fields are required" });
+  } else {
+    // console.log('body'+req.body)
+    phonenumber = req.body.mobile;
     try {
-        const spassword = await securePassword(req.body.password);
-        const existingUser = await user.findOne({ $or: [{ email: req.body.email }, { mobile: req.body.mobile }] });
-        if (existingUser) {
-            res.render('userregister', { message: "User already exists with this email or mobile number" });
-        } else {
-            const newUser = new user({
-                name: req.body.name,
-                email: req.body.email,
-                password: spassword,
-                mobile: req.body.mobile,
 
-            });
-            const userData = await newUser.save();
-            if (userData) {
-                req.session.user_id = userData.id;
-                res.redirect('/userhome')
-            } else {
-                res.render('userregister', { message: "Registration failed" });
-            }
-        }
+      const otpResponse = await client.verify.v2
+        .services('VA5d6b573510fb1b3d0f42fc7b41df4025')
+        .verifications.create({
+          to: `+91${phonenumber}`,
+          channel: 'sms',
+        });
+      res.render('otppage')
     } catch (error) {
-        console.log(error.message);
+     console.log(error.message);
     }
+  }
 }
+
+//verifying otp
+const verifyOtp = async (req, res, next) => {
+  const otp = req.body.otp;
+  try {
+    req.session.user
+    const details = req.session.userdata;
+
+    const verifiedResponse = await client.verify.v2
+      .services('VA5d6b573510fb1b3d0f42fc7b41df4025')
+      .verificationChecks.create({
+        to: `+91${details.mobile}`,
+        code: otp,
+      })
+    console.log('details' + details)
+    if (verifiedResponse.status === 'approved') {
+      details.password = await bcrypt.hash(details.password, 10)
+      const userdata = new user({
+        name: details.name,
+       // lastname: details.lastname,
+        email: details.email,
+       // username: details.username,
+        password: details.password,
+        mobile: details.mobile
+
+      })
+      const userData = await userdata.save();
+      // console.log()
+      // console.log("sss" + userData)
+      req.session.user = userData
+      if (userData) {
+        res.redirect('/userhome');
+      } else {
+        res.render('otppage', { message: "wrong otp" })
+      }
+
+    } else {
+      res.render('otppage', { message: "wrong otp" })
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
 // user logout 
 const userLogout = async (req, res) => {
     try {
@@ -132,27 +211,18 @@ const userLogout = async (req, res) => {
 }
 
 const productView = async (req, res) => {
-    try {
-        if (req.session.user_id) {
-            const userid = req.session.user_id;
-            const users = true;
-            const use = await user.findOne({ _id: userid });
+  try {
+      let id = req.params.id;
+      const productData = await product.findOne({ _id: id }).populate('category');
+      const users = Boolean(req.session.user_id);
+      const use = await user.findOne({ _id: req.session.user_id });
 
-            const id = req.params.id;
-            productData = await product.findOne({ _id: id })
-            res.render('productview', { productdetails: productData, users, use });
-        } else {
-            let id = req.params.id;
-            const users = false;
-            productData = await product.findOne({ _id: id })
-
-            res.render('productview', { productdetails: productData, users })
-
-        }
-    } catch (error) {
-        console.log(error.message);
-    }
+      res.render('productview', { productdetails: productData, users, use });
+  } catch (error) {
+      console.log(error.message);
+  }
 }
+
 
 const profile= async(req,res)=>{
     try {
@@ -255,6 +325,7 @@ const insertAddress = async (req, res) => {
         const addressinserted = await user.updateOne({ _id: req.session.user_id}, {
           $push: {
             address: {
+              name:req.body.name,
               houseName: req.body.hname,
               street: req.body.street,
               district: req.body.district,
@@ -361,14 +432,65 @@ const viewOrders = async (req, res) => {
     console.log(error.message);
   }
 };
-  
+const cancelOrder = async (req, res) => {
+  try {
+    const orderId = req.body.orderId;
+
+    // Find the order to cancel
+    const orderToCancel = await order.findOne({ _id: orderId }).populate('product.productId');
+
+    // Add the "Cancelled" status to the order status array
+    orderToCancel.orderStatus.push({ status: 'Cancelled', date: new Date() });
+    await orderToCancel.save();
+
+    // Update the status of the order to "Cancelled"
+    await orderToCancel.updateOne({ status: 'Cancelled' });
+    await orderToCancel.save();
+
+    
+
+    res.send('Order cancelled successfully');
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send('Error cancelling order');
+  }
+};
+
+const orderDetails = async(req,res)=>{
+  try {
+    if (req.session.user_id) {
+      const orderId = req.params.id;
+      const users = true;
+      const userId = req.session.user_id;
+      
+      const orderDetails = await order.findById(orderId).populate('product.productId');
+      res.render('orderdetails', {
+        users,
+        use: await user.findById(userId),
+       
+        orderDetail: orderDetails
+      });
+    } else {
+      res.redirect('/login');
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+
+}
+
+
+
+
 module.exports = {
     guest,
     userHome,
     
     loadLogin,
     loadRegister,
-    uploadRegister,
+   
+    verifySignup,
+    verifyOtp,
     verifyLogin,
     userLogout,
     productView,
@@ -382,7 +504,10 @@ module.exports = {
     editaddress,
     editedAddress,
     removeAddress,
-  viewOrders
+  viewOrders,
+  cancelOrder,
+  orderDetails,
+ 
    
 
 

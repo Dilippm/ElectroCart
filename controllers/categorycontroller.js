@@ -1,4 +1,5 @@
 const category = require('../models/categoryData')
+const product =require('../models/productData')
 
 const adminCategory=async(req,res)=>{
     try {
@@ -50,16 +51,29 @@ const adminCategory=async(req,res)=>{
     }
   }
   
-const deleteCategory =async(req,res)=>{
-  try {
-    const id =req.params.id;
-    console.log(id);
-     await category.deleteOne({_id:id});
-     res.redirect('/admin/category');
-  } catch (error) {
-    console.log(error.message);
-  }
-}  
+  const deleteCategory = async (req, res) => {
+    try {
+      const id = req.params.id;
+      console.log(id);
+      const products = await product.find({ category: id });
+      if (products.length > 0) {
+        // Render the same page with an error message
+        const categoryData = await category.find();
+        res.render("admincategory", {
+          categoryData,
+          message: "Cannot delete category. There are products associated with this category ."
+        });
+      } else {
+        await category.deleteOne({ _id: id });
+        res.redirect("/admin/category");
+      }
+    } catch (error) {
+      console.log(error.message);
+      //res.status(500).json({ message: "Error occurred while deleting category" });
+    }
+  };
+  
+  
 const viewEditCategory =async(req,res)=>{
   try {
     const id=req.params.id;

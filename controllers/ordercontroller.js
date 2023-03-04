@@ -34,18 +34,11 @@ const loadCheckOut = async (req, res) => {
 
 const successLoad = async (req, res, next) => {
   try {
-
     if (req.session.user_id) {
-
       let method = req.body.test
-
-
       if (method == "COD") {
-
-
         const userid = await User.findOne({ _id: req.session.user_id })
         const id = userid
-
         const orders = req.body
         const orderDetails = [];
         const productId = req.body.proId
@@ -53,58 +46,51 @@ const successLoad = async (req, res, next) => {
         if (!Array.isArray(orders.proId)) {
           orders.proId = [orders.proId]
         }
-
         if (!Array.isArray(orders.proQ)) {
           orders.proQ = [orders.proQ]
         }
-
         if (!Array.isArray(orders.qntyPrice)) {
           orders.qntyPrice = [orders.qntyPrice]
         }
-
         for (let i = 0; i < orders.proId.length; i++) {
-
           const productsId = orders.proId[i]
           const quantity = orders.proQ[i]
           const singleTotal = orders.qntyPrice[i]
           orderDetails.push({ productId: productsId, quantity: quantity, singleTotal: singleTotal })
         }
+
+        const addressId = req.body.address; // get the selected address ID from the form
+        const userData = await User.findById(id);
+        const addressDetails = userData.address.find(address => address._id == addressId); // find the selected address details from the user's address array
+
         const order = new Order({
           userId: id,
           product: orders.product,
           total: orders.total,
-          deliveryAddress: orders.address,
+          deliveryAddress: addressDetails, // set the delivery address to the selected address details
           paymentType: orders.test
         })
         const saveData = await order.save()
 
-
         const removing = await User.updateOne({ _id: req.session.user_id }, {
           $pull: {
             cart: { product: { $in: productId } }
-
-
           },
           $set: { totalPrice: 0 }
         })
 
-
-
-
-
-
         const userdetails = await User.findOne({ _id: req.session.user_id })
         res.render('successpage', { userdetails: userdetails })
-
       }
     } else {
       res.redirect('/login')
     }
   } catch (error) {
-
     console.log(error);
   }
 }
+
+
 module.exports = {
   loadCheckOut,
   successLoad

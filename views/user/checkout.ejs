@@ -61,33 +61,28 @@
 					<div class="col-md-7">
 						<!-- Billing Details -->
 						<div class="billing-details">
-							<div class="section-title">
-								<h3 class="title">Shipping address</h3>
-							</div>
-							<div class="form-group">
-								<input class="input" type="text" name="first-name" placeholder="<%= userdetails.name%> ">
-							</div>
-							
-							
-                            <% if(addressDetails.length > 0) { %>
-								<h4 style="margin-bottom: 20px;">Select shipping address:</h4>
-								<% for(var i=0; i<addressDetails.length; i++) { %>
-								  <div class="form-check" style="padding: 20px;">
-									<input class="form-check-input" type="radio" name="address" id="shipping-address<%=i%>" value="<%=addressDetails[i]._id%>">
-									<label class="form-check-label" for="shipping-address<%=i%>">
-									  <%=addressDetails[i].houseName%>, <%=addressDetails[i].street%>, <%=addressDetails[i].district%>, <%=addressDetails[i].country%> - <%=addressDetails[i].pincode%>
-									</label>
-								  </div>
-								<% } %>
-							  <% } %>
-							<button style="margin-top: 20px;"><a href="/addAddress">Add address</a></button>
+						  <div class="section-title">
+							<h3 class="title">Shipping address</h3>
+						  </div>
+						  
+						  <% if(addressDetails.length > 0) { %>
+							<h4 style="margin-bottom: 20px;">Select shipping address:</h4>
+							<% for(var i=0; i<addressDetails.length; i++) { %>
+							  <div class="form-check" style="padding: 20px;">
+								<input class="form-check-input" type="radio" name="address" id="shipping-address<%=i%>" value="<%=addressDetails[i]._id%>" onchange="updateDeliveryAddress('<%=addressDetails[i].name %>,<%= addressDetails[i].houseName %>, <%= addressDetails[i].street %>, <%= addressDetails[i].district %>, <%= addressDetails[i].country %> - <%= addressDetails[i].pincode %>')">
+								<label class="form-check-label" for="shipping-address<%=i%>">
+									<%=addressDetails[i].name%>,<%=addressDetails[i].houseName%>, <%=addressDetails[i].street%>, <%=addressDetails[i].district%>, <%=addressDetails[i].country%> - <%=addressDetails[i].pincode%>
+								</label>
+							  </div>
+							<% } %>
+						  <% } %>
+						  <div class="form-group">
+							<input class="input" type="text" name="delivery-address" id="delivery-address" placeholder="Delivery address">
+						  </div>
+						  <button style="margin-top: 20px;"><a href="/addAddress">Add address</a></button>
 						</div>
 						<!-- /Billing Details -->
-
-						
-
-						
-					</div>
+					  </div>
 
 					<!-- Order Details -->
 					<div class="col-md-5 order-details">
@@ -105,6 +100,8 @@
 								<div class="order-col">
 									<div><%= key.product.productName %></div>
 									<div>₹. <%=key.productTotalPrice %></div>
+										
+										
 									<input type="hidden" name="proQ" value="  <%=key.quantity %>">  
 									<input type="hidden" name="qntyPrice" value="<%=key.productTotalPrice %>"> 
 								</div>
@@ -118,7 +115,8 @@
 							<div class="order-col">
 								<div><strong>TOTAL</strong></div>
 								<div><strong class="order-total">₹. <%= datas.totalPrice %></strong></div>
-								<input type="hidden" name="total" value="<%=datas.totalPrice %>"> 
+								
+								<input type="hidden" name="total" value="<%=datas.totalPrice %>"><del class="product-old-price">₹ <%= (datas.totalPrice * 1.05).toFixed(2) %></del>
 							</div>
 						</div>
 						<label for="NAME" class="small text-muted mb-1">Payment
@@ -158,4 +156,10 @@
 		</div>
 		<!-- /SECTION -->
 
+		
+		<script>
+			function updateDeliveryAddress(address) {
+			  document.getElementById('delivery-address').value = address;
+			}
+		  </script>
 <%- include('../layout/user/footer.ejs')%>

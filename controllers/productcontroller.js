@@ -1,48 +1,48 @@
 const product = require('../models/productData');
 const Category =require("../models/categoryData");
 
-const loadProduct=async(req,res)=>{
-    try {
-        const productdata = await product.find({})
-        res.render('adminproduct', { productData: productdata })
-    } catch (error) {
-        console.log(error.message);
-    }
-}
-const addProduct=async(req,res)=>{
-    try {
-        const category= await Category.find({})
-        res.render('addproduct',{sendcategory:category})
-    } catch (error) {
-        console.log(error.message);
-    }
-}
-const insertProduct =async(req,res)=>{
+const loadProduct = async (req, res) => {
   try {
-      var arrImages=[];
-      for(let i=0;i<req.files.length;i++){
-          arrImages[i]= req.files[i].filename;
-      }
-       
-      const newProduct= new product({
-          productName:req.body.productName,
-          category:req.body.category,
-         
-          description:req.body.description,
-          price:req.body.price,
-          quantity:req.body.quantity,
-          images:arrImages
-      });
-    const productData = await  newProduct.save();
-    if(productData){
-      res.redirect('/admin/product');
-    }else{
-      res.render('addproduct',{message:'Failed to add new product'});
+    const productdata = await product.find({}).populate('category');
+    res.render('adminproduct', { productData: productdata })
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
+const addProduct = async (req, res) => {
+  try {
+    const categories = await Category.find({});
+    res.render('addproduct', { categories: categories });
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const insertProduct = async (req, res) => {
+  try {
+    var arrImages = [];
+    for (let i = 0; i < req.files.length; i++) {
+      arrImages[i] = req.files[i].filename;
     }
 
+    const newProduct = new product({
+      productName: req.body.productName,
+      category: req.body.category,
+      description: req.body.description,
+      price: req.body.price,
+      quantity: req.body.quantity,
+      images: arrImages
+    });
+
+    const productData = await newProduct.save();
+    if (productData) {
+      res.redirect('/admin/product');
+    } else {
+      res.render('addproduct', { message: 'Failed to add new product' });
+    }
   } catch (error) {
-      console.log(error.message);
+    console.log(error.message);
   }
 }
 
@@ -55,16 +55,16 @@ const deleteProduct =async(req,res)=>{
         console.log(error.message);
     }
 }
-const editProduct=async(req,res)=>{
-    try {
-        const productData=await product.findById(req.params.id);
-        const categoryData=await Category.find();
-        res.render('editproduct',{product:productData,Category:categoryData});
-
-    } catch (error) {
-        console.log(error.message);
-    }
+const editProduct = async (req, res) => {
+  try {
+    const productData = await product.findById(req.params.id).populate('category');
+    const categoryData = await Category.find();
+    res.render('editproduct', { product: productData, categories: categoryData });
+  } catch (error) {
+    console.log(error.message);
+  }
 }
+
 
 const UpdateProduct = async (req, res) => {
   try {
@@ -78,7 +78,7 @@ const UpdateProduct = async (req, res) => {
     }
 
     const productData = {
-      productName: req.body.productname,
+      productName: req.body.productName,
       category: req.body.category,
       description: req.body.description,
       price: req.body.price,
@@ -95,7 +95,16 @@ const UpdateProduct = async (req, res) => {
     console.log(error.message);
   }
 };
-    
+const viewdDetails =async(req,res)=>{
+  try {
+    const id = req.params.id;
+    const productData = await product.findOne({_id: id}).populate('category');
+    res.render('productdetails',{productdetail:productData});
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
 module.exports={
   
     loadProduct,
@@ -104,7 +113,8 @@ module.exports={
   
     deleteProduct,
     editProduct,
-    UpdateProduct
+    UpdateProduct,
+    viewdDetails
    
 
     

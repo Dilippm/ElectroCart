@@ -15,7 +15,7 @@ const orderData = new mongoose.Schema({
     default: `order_id_${uuidv4()}`, // generate a custom order ID using uuid
   },
   deliveryAddress: {
-    type: String,
+    type: Array,
     required: true,
   },
   date: {
@@ -29,27 +29,39 @@ const orderData = new mongoose.Schema({
         ref: 'product',
         required: true,
       },
-      quantity:{
-          type:Number,
-          required:true,
-      } ,
-      singleTotal:{
-        type:Number,
-        required:true
+      quantity: {
+        type: Number,
+        required: true,
+      },
+      singleTotal: {
+        type: Number,
+        required: true
+      }
     }
-  }
   ],
   total: {
     type: Number,
   },
   paymentType: {
     type: String,
-    required:true,
+    required: true,
   },
   status: {
     type: String,
     default: 'pending',
   },
+  orderStatus: [
+    {
+      status: {
+        type: String,
+        required: true,
+      },
+      date: {
+        type: Date,
+        default: Date.now(),
+      },
+    },
+  ],
 });
 
 

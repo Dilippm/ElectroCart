@@ -123,7 +123,8 @@
 												<div class="product-body">
 													
 													<h3 class="product-name"><a href="/productview/<%= data._id %>"><%- data.productName %></a></h3>
-													<h4 class="product-price"><%- data.price %></h4>
+													<h4 class="product-price"><%= data.price %>  <del class="product-old-price">₹ <%= (data.price * 1.05).toFixed(2) %></del></h4>
+
 													<div class="product-rating">
 														<i class="fa fa-star"></i>
 														<i class="fa fa-star"></i>

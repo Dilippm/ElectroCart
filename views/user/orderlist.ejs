@@ -60,14 +60,16 @@
                 <thead>
                   <tr>
                     <th>No.</th>
-                    <th>Order Id</th>
+                    <!-- <th>Order Id</th> -->
                     <th>Product Name</th>
+                    <th>Product Image</th>
                 
-                    <th>Address</th>
-                    <th>Payment</th>
+                    <!-- <th>Address</th> -->
+                    <!-- <th>Payment</th> -->
                     <th>Price</th>
                     <th>Date</th>
                     <th>Status</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -75,22 +77,52 @@
                     <% for(let i=0; i<orderDetail.length; i++) { %>
                       <tr>
                         <td><%= i+1 %></td>
-                        <td><%= orderDetail[i]._id %></td>
+                        <!-- <td><%= orderDetail[i]._id %></td> -->
                         <td>
                           <% orderDetail[i].product.forEach((product) => { %>
                             <div><%= product.productId.productName %></div>
                           <% }); %>
                         </td>
-                      
-                        <td><%= orderDetail[i].deliveryAddress %></td>
-                        <td><%= orderDetail[i].paymentType %></td>
+                        <td>
+                          <% orderDetail[i].product.forEach((product) => { %>
+                            <img src="/productImages/<%= product.productId.images[0] %>" width="100px" height="100px" alt="">
+                          <% }); %>
+                        </td>
+                        
+                        
+                        <!-- <td>
+                          <% if(orderDetail[i].deliveryAddress.length > 0) { %>
+                            <% orderDetail[i].deliveryAddress.forEach((address) => { %>
+                              <p class="product-price" style="margin-bottom: 5px; font-size: larger;">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <b>
+                                  <%= address.houseName %>, <%= address.street %>, <%= address.district %>,
+                                  <%= address.country %> - <%= address.pincode %>
+                                </b>
+                              </p>
+                            <% }); %>
+                          <% } else { %>
+                            <p class="product-price">N/A</p>
+                          <% } %>
+                        </td> -->
+                        <!-- <td><%= orderDetail[i].paymentType %></td> -->
                         <td><%= orderDetail[i].total %></td>
-                        <td><%= orderDetail[i].date %></td>
+                        <td><%=new Date(orderDetail[i].date).toLocaleDateString() %></td>
                         <td><%= orderDetail[i].status %></td>
+                        <td> <button  class="btn btn-primary"><a href="/details/<%= orderDetail[i]._id %>" style="color: white;">Details</a> </button>
+                          <% if (orderDetail[i].status !== 'Cancelled') { %>
+                            <button class="btn btn-warning cancel-order" style="color: black;" data-order-id="<%= orderDetail[i]._id %>" >Cancel</button>
+                          <% } %>
+                      </td>
                       </tr>
                     <% } %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="9"><p>No orders found</p></td>
+                    </tr>
                   <% } %>
                 </tbody>
+                
               </table>
               
               
@@ -103,6 +135,34 @@
     </div>
   </section>
 
+  
+  <script>
+    $(document).ready(function() {
+      $('.cancel-order').click(function() {
+        var orderId = $(this).data('order-id');
+        if (confirm('Are you sure you want to cancel this order?')) {
+          // User clicked OK in the confirmation dialog
+          // Send an AJAX request to cancel the order
+          $.ajax({
+            url: '/cancel-order',
+            method: 'POST',
+            data: { orderId: orderId },
+            success: function(response) {
+              // Order was successfully cancelled
+              alert('Order cancelled!');
+              // Reload the page to see the updated order list
+              location.reload();
+            },
+            error: function(error) {
+              // Error occurred while cancelling the order
+              console.log(error);
+              alert('Error cancelling order. Please try again later.');
+            }
+          });
+        }
+      });
+    });
+  </script>
   
 
 <%- include('../layout/user/footer.ejs')%>
