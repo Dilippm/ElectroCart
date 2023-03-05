@@ -21,6 +21,7 @@ const categorycontroller = require('../controllers/categorycontroller')
 const productcontroller = require('../controllers/productcontroller')
 const adminusercontroller = require('../controllers/adminusercontroller')
 const adminordercontroller= require('../controllers/adminordercontroller');
+const adscontroller= require('../controllers/adscontroller');
 
 
 adminRoute.set('view engine','ejs')
@@ -75,8 +76,15 @@ adminRoute.get('/user/unblockuser/:id',auth.isLogin,adminusercontroller.unblocku
 adminRoute.get('/order',auth.isLogin,adminordercontroller.viewOrder);
 adminRoute.post('/order/change-order-status',adminordercontroller.dropdown);
 adminRoute.get('/order/detail/:id',adminordercontroller.orderDetails);
-
-
+// sales Report
+adminRoute.get('/salesreport',admincontroller.viewsalesReport);
+// banner 
+adminRoute.get('/ads',auth.isLogin,adscontroller.loadAds);
+adminRoute.get('/addAdds',auth.isLogin,adscontroller.addAdds);
+adminRoute.post('/addAdds',upload.array('image',1),adscontroller.insertAdds);
+adminRoute.get('/editAdd/:id',auth.isLogin,adscontroller.loadEditBanner);
+adminRoute.post('/editAdd/:id',upload.array('image',1),adscontroller.saveEditBanner);
+adminRoute.get('/ads/deleteadd/:id',auth.isLogin,adscontroller.deleteAdd);
 
 
 

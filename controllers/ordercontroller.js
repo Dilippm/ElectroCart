@@ -31,7 +31,6 @@ const loadCheckOut = async (req, res) => {
 
 
 
-
 const successLoad = async (req, res, next) => {
   try {
     if (req.session.user_id) {
@@ -57,6 +56,13 @@ const successLoad = async (req, res, next) => {
           const quantity = orders.proQ[i]
           const singleTotal = orders.qntyPrice[i]
           orderDetails.push({ productId: productsId, quantity: quantity, singleTotal: singleTotal })
+        }
+
+        // Update the product quantity in the Product collection
+        for (let i = 0; i < orderDetails.length; i++) {
+          const product = await Product.findById(orderDetails[i].productId);
+          product.quantity -= orderDetails[i].quantity;
+          await product.save();
         }
 
         const addressId = req.body.address; // get the selected address ID from the form

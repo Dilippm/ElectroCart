@@ -1,0 +1,61 @@
+<%- include('../layout/admin/header.ejs')%>
+
+<%- include('../layout/admin/navbar.ejs')%>
+<%- include('../layout/admin/sidebar.ejs')%>
+<div class="container">
+  <div class="pagetitle" style="margin-top: 100px;">
+    <h1>Sales Report</h1>
+    <button class="btn btn-primary" onclick="window.print()" >Print Report</button>
+  
+  </div>
+    
+    <table class="table" id="usertable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Month</th>
+          <th>Product Name</th>
+          <th>Quantity Sold</th>
+          <th>Total Amount</th>
+          <th>Change in sales (%)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% let prevMonthTotalSales = 0 %>
+        <% Object.entries(salesByMonthAndProduct).forEach(([month, products], index) => { %>
+          <% let monthTotalSales = 0 %>
+          <% Object.entries(products).forEach(([productName, { quantitySold, totalSales }]) => { %>
+            <% monthTotalSales += totalSales %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td><%= month %></td>
+              <td><%= productName %></td>
+              <td><%= quantitySold %></td>
+              <td><%= totalSales %></td>
+              <td class="<%= index === 0 ? '' : (monthTotalSales - prevMonthTotalSales) < 0 ? 'text-danger' : 'text-success' %>">
+                <%= index === 0 ? 0 : (monthTotalSales - prevMonthTotalSales)/100 %>
+              </td>
+            </tr>
+          <% }) %>
+          <% prevMonthTotalSales = monthTotalSales %>
+        <% }) %>
+      </tbody>
+    </table>
+    
+    
+          
+      
+      
+              
+    
+              <script>
+                $(document).ready( function () {
+                $('#usertable').DataTable();
+            });
+            </script>
+    
+    </div>
+        
+
+
+<%- include('../layout/admin/footer.ejs')%>

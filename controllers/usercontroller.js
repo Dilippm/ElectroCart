@@ -1,7 +1,8 @@
-const user = require('../models/userData');
-const product = require('../models/productData');
-const category = require('../models/categoryData');
+const user= require('../models/userData')
+const product= require('../models/productData')
+const category= require('../models/categoryData')
 const order= require('../models/orderData')
+const ads= require('../models/adsData')
 
 require('dotenv').config();
 const accountsid = process.env.TWILIO_ACCOUNT_SID;
@@ -29,8 +30,9 @@ const guest = async (req, res) => {
         
         const data = await product.find();
         const cat = await category.find();
+        const banners = await ads.find({})
         const users = false;
-        res.render('homepage', { data, cat, users })
+        res.render('homepage', { data, cat, users,banners })
 
     } catch (error) {
         console.log(error.message);
@@ -45,8 +47,9 @@ const userHome = async (req, res) => {
             
             const cata = await category.find();
             const use = await user.findOne({ _id: id });
+            const banners = await ads.find({})
 
-            res.render('homepage', { data, cata, use, users });
+            res.render('homepage', { data, cata, use, users, banners});
 
         }
 
