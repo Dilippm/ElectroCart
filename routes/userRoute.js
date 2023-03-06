@@ -26,9 +26,9 @@ userRoute.set('views','./views/user')
 
 
 //bodyparser
-
-userRoute.use(bodyparser.json())
 userRoute.use(bodyparser.urlencoded({extended:true}));
+userRoute.use(bodyparser.json())
+
 const path=require('path');
 
 userRoute.use(express.static(path.join(__dirname,'public')))
@@ -58,6 +58,7 @@ userRoute.get('/checkout',ordercontroller.loadCheckOut);
 
 userRoute.get('/orderlist',usercontroller.viewOrders);
 userRoute.get('/details/:id',usercontroller.orderDetails);
+userRoute.get('/success',ordercontroller.orderConfirmation)
 
 
 
@@ -80,6 +81,7 @@ userRoute.post('/addAddress',usercontroller.insertAddress);
 userRoute.post('/editAddress/:id',usercontroller.editedAddress);
 userRoute.post ('/change-Product-Quantity',cartcontroller.changeQuantity);
 userRoute.post('/checkout',ordercontroller.successLoad);
+userRoute.post('/verify-payment',ordercontroller.PaymentVerified)
 userRoute.post('/cancel-order',usercontroller.cancelOrder);
 
 

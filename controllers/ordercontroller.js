@@ -1,6 +1,16 @@
 const Product = require('../models/productData');
 const User = require('../models/userData');
 const Order = require('../models/orderData');
+const crypto=require('crypto');
+const Razorpay = require('razorpay');
+require('dotenv').config();
+
+ var instance = new Razorpay({
+  key_id:process.env.KEY_ID,
+
+  key_secret:process.env.KEY_SECRET,
+ });
+
 
 const loadCheckOut = async (req, res) => {
   try {
@@ -30,11 +40,14 @@ const loadCheckOut = async (req, res) => {
 };
 
 
-
-const successLoad = async (req, res, next) => {
+const successLoad = async (req, res) => {
   try {
     if (req.session.user_id) {
+      
       let method = req.body.test
+    
+  
+       
       if (method == "COD") {
         const userid = await User.findOne({ _id: req.session.user_id })
         const id = userid
@@ -74,7 +87,8 @@ const successLoad = async (req, res, next) => {
           product: orders.product,
           total: orders.total,
           deliveryAddress: addressDetails, // set the delivery address to the selected address details
-          paymentType: orders.test
+          paymentType: orders.test,
+          status:"Processing"
         })
         const saveData = await order.save()
 
@@ -85,19 +99,162 @@ const successLoad = async (req, res, next) => {
           $set: { totalPrice: 0 }
         })
 
-        const userdetails = await User.findOne({ _id: req.session.user_id })
-        res.render('successpage', { userdetails: userdetails })
+        // const userdetails = await User.findOne({ _id: req.session.user_id })
+        // res.render('successpage', { userdetails: userdetails })
+        res.json({status:true})
+      } else if (method == "UPI") {
+        // CODE FOR UPI PAYMENT
+        try {
+          const userid = await User.findOne({ _id: req.session.user_id });
+          const id = userid;
+      
+          const orders = req.body;
+          const orderDetails = [];
+          const productId = req.body.proId;
+          orders.product = orderDetails;
+          if (!Array.isArray(orders.proId)) {
+            orders.proId = [orders.proId];
+          }
+      
+          if (!Array.isArray(orders.proQ)) {
+            orders.proQ = [orders.proQ];
+          }
+      
+          if (!Array.isArray(orders.qntyPrice)) {
+            orders.qntyPrice = [orders.qntyPrice];
+          }
+      
+          for (let i = 0; i < orders.proId.length; i++) {
+            const productId = orders.proId[i];
+            const quantity = orders.proQ[i];
+            const singleTotal = orders.qntyPrice[i];
+            orderDetails.push({ productId: productId, quantity: quantity, singleTotal: singleTotal });
+          }
+      
+          // Update the product quantity in the Product collection
+          for (let i = 0; i < orderDetails.length; i++) {
+            const product = await Product.findById(orderDetails[i].productId);
+            product.quantity -= orderDetails[i].quantity;
+            await product.save();
+          }
+      
+          const addressId = req.body.address; // get the selected address ID from the form
+          const userData = await User.findById(id);
+          const addressDetails = userData.address.find(address => address._id == addressId); // find the selected address details from the user's address array
+      
+          const order = new Order({
+            userId: id,
+            product: orders.product,
+            total: orders.total,
+            deliveryAddress: addressDetails, // set the delivery address to the selected address details
+            paymentType: orders.test,
+            status: "unpaid"
+          });
+          const saveData = await order.save();
+      
+          const removing = await User.updateOne(
+            { _id: req.session.user_id },
+            {
+              $pull: { cart: { product: { $in: productId } } },
+              $set: { totalPrice: 0 }
+            }
+          );
+      
+          const latestOrder = await Order.findOne({}).sort({ date: -1 }).lean();
+         
+      
+          if (latestOrder) {
+            let options={
+              amount:orders.total*100,
+              currency:"INR",
+              receipt:""+latestOrder._id
+            };
+            instance.orders.create(options,function(err,order){
+              console.log("doooooooone");
+              res.json({viewRazorpay:true,order})  
+            });
+          } else {
+            console.log("Latest order not found.");
+            res.json({viewRazorpay:false}); // or handle the error as per your requirement
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        res.json({ radio: true });
       }
-    } else {
-      res.redirect('/login')
-    }
+            } else {
+              res.redirect('/login')
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        }
+        
+
+
+
+//verify payment 
+const PaymentVerified= async(req,res)=>{
+  try {
+   if(req.session.user_id){
+        console.log("final");
+       
+       const details=req.body
+   
+    
+
+       let hmac=crypto.createHmac('sha256',process.env.KEY_SECRET)
+       hmac.update(details.payment.razorpay_order_id+'|'+details.payment.razorpay_payment_id)
+       hmac=hmac.digest('hex')
+
+       
+       if(hmac==details['payment']['razorpay_signature']){
+         console.log("success");
+         const latestOrder = await Order
+         .findOne({})
+         .sort({ date: -1 })
+         .lean();
+   const change=await Order.updateOne({_id: latestOrder._id},{$set:{status:"Processing"}})
+res.json({status:true})
+       }else{
+         console.log("Fail");
+res.json({failed:true})
+       }
+   }else{
+     res.redirect('/login')
+   }
+   
   } catch (error) {
-    console.log(error);
+   console.log(error.message);
+  } 
+}
+
+
+//success get 
+
+const orderConfirmation =async(req,res)=>{
+  try{
+    if(req.session.user_id){
+     
+
+
+       res.render('successpage')
+  
+         
+    }
+
+  }catch{
+   console.log(error.message);
   }
 }
 
 
+
 module.exports = {
   loadCheckOut,
-  successLoad
+  successLoad,
+  PaymentVerified,
+
+  orderConfirmation
 }

@@ -1,6 +1,10 @@
 <%- include('../layout/user/header.ejs')%>
 <%- include('../layout/user/navbar.ejs')%>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.all.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.3.js"
+	integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+	<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 
 								<!-- Menu Toogle -->
@@ -49,7 +53,7 @@
         
 		<!-- SECTION -->
 		<div class="section">
-			<form action="" method="post">
+			<form action="" method="post" id="checkout-form">
 			<!-- container -->
 			<div class="container">
 				
@@ -77,7 +81,7 @@
 							<% } %>
 						  <% } %>
 						  <div class="form-group">
-							<input class="input" type="text" name="delivery-address" id="delivery-address" placeholder="Delivery address">
+							<input class="input" type="text" name="delivery-address" id="delivery-address" placeholder="Delivery address" hidden>
 						  </div>
 						  <button style="margin-top: 20px;"><a href="/addAddress">Add address</a></button>
 						</div>
@@ -117,6 +121,7 @@
 								<div><strong class="order-total">₹. <%= datas.totalPrice %></strong></div>
 								
 								<input type="hidden" name="total" value="<%=datas.totalPrice %>"><del class="product-old-price">₹ <%= (datas.totalPrice * 1.05).toFixed(2) %></del>
+								
 							</div>
 						</div>
 						<label for="NAME" class="small text-muted mb-1">Payment
@@ -149,9 +154,10 @@
                 <%} %>
                 <%} %>
 				<!-- /row -->
+			</form>
 			</div>
 			
-			</form>
+			
 			<!-- /container -->
 		</div>
 		<!-- /SECTION -->
@@ -161,5 +167,84 @@
 			function updateDeliveryAddress(address) {
 			  document.getElementById('delivery-address').value = address;
 			}
+		 
+			$("#checkout-form").submit((e)=>{
+				e.preventDefault();
+                var formData = $("#checkout-form").serialize();
+                $.ajax({
+                    url: '/checkout', // replace with the URL of your server-side script
+                    type: 'POST', // use POST method
+                    data: formData,
+                    success: (response) => {
+                        // handle the response from the server
+                        console.log("yes")
+                        console.log(response);
+                        if (response.status) {
+    location.href = '/success'
+} else if (response.radio) {
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Select Payment Method.',
+    })
+} else if (response.viewRazorpay) {
+    razorpayPayment(response.order)
+}
+                    },
+
+                });
+            });
+			function razorpayPayment(order) {
+                var options = {
+                    "key": "rzp_test_ObYUW6m2fN5vlq", // Enter the Key ID generated from the Dashboard
+                    "amount":order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                    "currency": "INR",
+                    "name": "Electro", //your business name
+                    "description": "Test Transaction",
+                    "image": "https://example.com/your_logo",
+                    "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                    "handler": function (response) {
+                        //  alert(response.razorpay_payment_id);
+                        // alert(response.razorpay_order_id);
+                        //  alert(response.razorpay_signature)
+
+                        verifyPayment(response,order)
+                    },
+                    "prefill": {
+                        "name": "Dilip P M", //your customer's name
+                        "email": "dilippm92@gmail.com",
+                        "contact": "9000090000"
+                    },
+                    "notes": {
+                        "address": "Razorpay Corporate Office"
+                    },
+                    "theme": {
+                        "color": "#3399cc"
+                    }
+                };
+                var rzp1 = new Razorpay(options);
+                rzp1.open();
+
+            }
+
+			
+            function verifyPayment(payment, order) {
+                $.ajax({
+                    url:'/verify-payment',
+                    data: {
+                        payment,
+                        order
+                    },
+                    method: "post",
+                    success: (response) => {
+                        // handle the response from the server
+                        console.log("yes")
+                        console.log(response);
+                        if (response.status) {
+                            location.href = '/success'
+                        } 
+                    }})
+
+            }
 		  </script>
 <%- include('../layout/user/footer.ejs')%>

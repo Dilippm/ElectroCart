@@ -51,7 +51,7 @@
               <td><%= new Date(order[i].date).toLocaleDateString() %></td>
 
               <td>
-                <% if (orderDetail[i].status === "Cancelled") { %>
+                <% if (orderDetail[i].status === "Cancelled" ||orderDetail[i].status === "unpaid") { %>
                   <%= orderDetail[i].status %>
                 <% } else { %>
                   <form action="/admin/order/change-order-status" method="post">
