@@ -90,22 +90,7 @@
                         </td>
                         
                         
-                        <!-- <td>
-                          <% if(orderDetail[i].deliveryAddress.length > 0) { %>
-                            <% orderDetail[i].deliveryAddress.forEach((address) => { %>
-                              <p class="product-price" style="margin-bottom: 5px; font-size: larger;">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <b>
-                                  <%= address.houseName %>, <%= address.street %>, <%= address.district %>,
-                                  <%= address.country %> - <%= address.pincode %>
-                                </b>
-                              </p>
-                            <% }); %>
-                          <% } else { %>
-                            <p class="product-price">N/A</p>
-                          <% } %>
-                        </td> -->
-                        <!-- <td><%= orderDetail[i].paymentType %></td> -->
+                       
                         <td><%= orderDetail[i].total %></td>
                         <td><%=new Date(orderDetail[i].date).toLocaleDateString() %></td>
                         <td><%= orderDetail[i].status %></td>

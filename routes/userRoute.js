@@ -59,6 +59,7 @@ userRoute.get('/checkout',ordercontroller.loadCheckOut);
 userRoute.get('/orderlist',usercontroller.viewOrders);
 userRoute.get('/details/:id',usercontroller.orderDetails);
 userRoute.get('/success',ordercontroller.orderConfirmation)
+userRoute.get('/products',usercontroller.allProductView)
 
 
 

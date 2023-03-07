@@ -1,0 +1,103 @@
+
+<%- include('../layout/user/header.ejs')%>
+<%- include('../layout/user/navbar.ejs')%>
+
+
+<!-- Menu Toogle -->
+<div class="menu-toggle">
+    <a href="#">
+        <i class="fa fa-bars"></i>
+        <span>Menu</span>
+    </a>
+</div>
+<!-- /Menu Toogle -->
+</div>
+</div>
+<!-- /ACCOUNT -->
+</div>
+<!-- row -->
+</div>
+<!-- container -->
+</div>
+<!-- /MAIN HEADER -->
+</header>
+<!-- /HEADER -->
+
+<!-- NAVIGATION -->
+<nav id="navigation">
+<!-- container -->
+<div class="container">
+<!-- responsive-nav -->
+<div id="responsive-nav">
+<!-- NAV -->
+<ul class="main-nav nav navbar-nav">
+<li class="active"><a href="/">Home</a></li>
+<li class="active"><a href="/products">All Products</a></li>
+
+
+
+
+</ul>
+<!-- /NAV -->
+</div>
+<!-- /responsive-nav -->
+</div>
+<!-- /container -->
+</nav>
+<!-- /NAVIGATION -->
+<!-- /SECTION -->
+<!-- SECTION -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+
+            <!-- section title -->
+            <div class="col-md-12">
+                <div class="section-title">
+                    <h3 class="title">Products</h3>
+                </div>
+            </div>
+            <!-- /section title -->
+
+            <!-- products -->
+            <% data.forEach((data)=>{%>
+            <div class="col-md-4">
+                <div class="product" style="margin-bottom: 70px;">
+                    <div class="product-img">
+                        <img src="/productImages/<%- data.images[0]%>" height="300px" width="150px" alt="">
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-name"><a href="/productview/<%= data._id %>"><%-
+                                data.productName %></a></h3>
+                        <h4 class="product-price">
+                            <%= data.price %> <del class="product-old-price">₹ <%=
+                                (data.price * 1.05).toFixed(2) %></del>
+                        </h4>
+                        <div class="product-rating">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                        </div>
+                        <div class="product-btns">
+                            <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+                            <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                        </div>
+                    </div>
+                    <div class="add-to-cart">
+                        <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i><a href="/add-to-cart/<%= data._id %>" style="color: white;"  >add to cart</a></button>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+	</div>
+	
+  </div>
+  </div>
+  <!-- /Products slick -->
+  
+
+<%- include('../layout/user/footer.ejs')%>
