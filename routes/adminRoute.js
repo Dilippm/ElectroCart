@@ -77,7 +77,7 @@ adminRoute.get('/order',auth.isLogin,adminordercontroller.viewOrder);
 adminRoute.post('/order/change-order-status',adminordercontroller.dropdown);
 adminRoute.get('/order/detail/:id',adminordercontroller.orderDetails);
 // sales Report
-adminRoute.get('/salesreport',admincontroller.viewsalesReport);
+adminRoute.get('/salesreport',admincontroller.viewDailySalesReport);
 // banner 
 adminRoute.get('/ads',auth.isLogin,adscontroller.loadAds);
 adminRoute.get('/addAdds',auth.isLogin,adscontroller.addAdds);

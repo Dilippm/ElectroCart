@@ -14,9 +14,9 @@ const loadUser = async (req, res) => {
 const blockUser=async(req,res)=>{
   try {
       const id= req.params.id;
-      console.log(id);
+      
       const wait = await user.updateOne({_id:id},{$set:{status:true}});
-      console.log(wait);
+     
       res.redirect('/admin/user');
   } catch (error) {
       console.log(error.message);

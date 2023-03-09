@@ -47,11 +47,15 @@
       <!-- container -->
       <div class="container">
         <!-- row -->
+        <div>
+
+        
         <div class="row">
           <% for(let i=0; i<orderDetail.product.length; i++){ %>
             <!-- Product main img -->
+            <div class="card" >
             <div class="col-md-5 col-md-push-2">
-              <div id="product-main-img">
+              <div id="product-main-img"  >
                 <div class="product-preview">
                   <img src="/productImages/<%=orderDetail.product[i].productId.images[0]%>" width="500px" height="500px"
                     alt="">
@@ -75,7 +79,7 @@
                     <b style="color: #D10024;">Order Id:</b>
                   </h4>
                   <p style="font-size: larger;">
-                    <b>
+                    <b style="color: black;">
                       <%= orderDetail.orderId%>
                     </b>
                   </p>
@@ -154,7 +158,8 @@
             <!-- /Product details -->
 
             <% } %>
-
+            </div>
+            <div  style=" border: 1px solid #ccc; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);padding: 10px;" >
               <h4 class="product-price">
                 <b style="color: #D10024;">Total Price:</b>
               </h4>
@@ -171,6 +176,10 @@
               <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">
                 Track Order
               </button>
+
+            </div>
+
+              
 
               <!-- Modal -->
               <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"

@@ -40,19 +40,23 @@
                                     <h4 class="product-name"><b style="color: blue;">Order Id:</b> </h4>
                                       <p style="font-size: larger;"> <b><%= orderdetails.orderId%></b></p> 
                                    
-                                    <h4 class="product-name"><b style="color: blue;">Product name:</b></h4>
-                                    <p style="font-size: larger;"> <b><%= orderdetails.product[0].productId.productName %></b></p>
+                                   
+                                      <h4 class="product-price"><b style="color: blue;">Product Name:</b></h4>
+                                    <% for(let i=0; i<orderdetails.product.length; i++){ %>
+                                       
+                                            <p style="font-size: larger;"> <b><%=i+1 %>. <%=  orderdetails.product[i].productId.productName %></b>  </p>
+                                          
                                         
-                                    
+                                        <% } %>
 
                                     <div>
                                         <h4 class="product-price"><b style="color: blue;">Total Price:</b> </h4>
                                         <p style="font-size: larger;"> <b>₹ <%= orderdetails.total %></b> </p> 
                                        
-
+                                        <h4 class="product-price"><b style="color: blue;">Quantity:</b></h4>
                                         <% for(let i=0; i<orderdetails.product.length; i++){ %>
-                                            <h4 class="product-price"><b style="color: blue;">Quantity:</b></h4>
-                                                <p style="font-size: larger;"> <b><%= orderdetails.product[i].quantity %></b>  </p>
+                                            
+                                                <p style="font-size: larger;"> <b><%=i+1 %>. <%= orderdetails.product[i].quantity %></b>  </p>
                                               
                                             
                                             <% } %>
@@ -84,9 +88,9 @@
                                                    
                                                      
                                                     <h4 class="product-price"><b style="color: blue;">Track Order:</b></h4>
-                                                    <p style="font-size: larger;"> <b style="color: brown;">Pending:<%= orderdetails.date %></b></p>
+                                                    <p style="font-size: larger;"> <b style="color: rgb(165, 42, 149);">Pending:<%= orderdetails.date %></b></p>
                                                     <% for (let i = 0; i < orderdetails.orderStatus.length; i++) { %>
-                                                        <% if (orderdetails.orderStatus[i].status === 'cancel') { %>
+                                                        <% if (orderdetails.orderStatus[i].status === 'Cancelled') { %>
                                                             <p style="font-size: larger;"><b style="color:red;"><%= orderdetails.orderStatus[i].status %>: <%= orderdetails.orderStatus[i].date %></b></p>
                                                           <% } else { %>
                                                             <p style="font-size: larger;"><b style="color:black;"><%= orderdetails.orderStatus[i].status %>: <%= orderdetails.orderStatus[i].date %></b></p>

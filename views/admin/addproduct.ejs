@@ -1,51 +1,52 @@
 <%- include('../layout/admin/header.ejs')%>
-<%- include('../layout/admin/navbar.ejs')%>
-<%- include('../layout/admin/sidebar.ejs')%>
+    <%- include('../layout/admin/navbar.ejs')%>
+        <%- include('../layout/admin/sidebar.ejs')%>
 
-<main id="main" class="main">
+            <main id="main" class="main">
 
-    <section>
-        <div class="container mt-4">
-            <div class="row">
-                <div class="col-md-6">
-                    <h2 class="text-center">Add Product</h2>
-                    <form action="/admin/product" method="post" enctype="multipart/form-data" >
-                        <label for="">Product name</label>
-                        <input type="text" name="productName" class="form-control" required>
-                        <label for="">Category</label>
-                        <select class="form-control" name="category" placeholder=" select category">
+                <section>
+                    <div class="container mt-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h2 class="text-center">Add Product</h2>
+                                <form action="/admin/product" method="post" enctype="multipart/form-data">
+                                    <label for="">Product name</label>
+                                    <input type="text" name="productName" class="form-control" required="required">
+                                    <label for="">Category</label>
+                                    <select class="form-control" name="category" placeholder=" select category">
 
-                            <option >Select the category</option>
-                            <% categories.forEach(category => { %>
-                            <option value="<%= category._id %>"><%= category.category %></option>
-                            <% }) %>
-                        </select>
+                                        <option>Select the category</option>
+                                        <% categories.forEach(category=> { %>
+                                            <option value="<%= category._id %>">
+                                                <%= category.category %>
+                                            </option>
+                                            <% }) %>
+                                    </select>
 
-                        <label for="">Description</label>
-                        <input type="text" name="description" class="form-control" required>
-                        <label for="">Price</label>
-                        <input type="number" name="price" class="form-control" required min="0">
-                        <label for="">Quantity</label>
-                        <input type="number" name="quantity" class="form-control" required min="0">
-                        <label for="">Images</label>
-                        <input multiple type="file" name="images" class="form-control">
-    
-                        <button type="submit" class="btn btn-success mt-4">Add</button> 
-                        <% if (typeof message !== "undefined") { %>
-                            <h1 style="font-size: 14px;color: brown;"><%= message %></h1>
-                        <% } %>
-                    </form>
-    
-                </div>
-            </div>
-        </div>
-    </section>
-    
-</main><!-- End #main -->
+                                    <label for="">Description</label>
+                                    <input type="text" name="description" class="form-control" required="required">
+                                    <label for="">Price</label>
+                                    <input type="number" name="price" class="form-control" required="required" min="0">
+                                    <label for="">Quantity</label>
+                                    <input type="number" name="quantity" class="form-control" required="required"
+                                        min="0">
+                                    <label for="">Images</label>
+                                    <input multiple="multiple" type="file" name="images" class="form-control">
 
-    
+                                    <button type="submit" class="btn btn-success mt-4">Add</button>
+                                    <% if (typeof message !=="undefined" ) { %>
+                                        <h1 style="font-size: 14px;color: brown;">
+                                            <%= message %>
+                                        </h1>
+                                        <% } %>
+                                </form>
 
-  
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-  
-<%- include('../layout/admin/footer.ejs')%>
+            </main>
+            <!-- End #main -->
+
+            <%- include('../layout/admin/footer.ejs')%>

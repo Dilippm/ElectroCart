@@ -99,26 +99,13 @@ const loadRegister = async (req, res) => {
         console.log(error.message);
     }
 }
-// register page post const uploadRegister = async (req, res) => {     try {
-// const spassword = await securePassword(req.body.password);         const
-// existingUser = await user.findOne({ $or: [{ email: req.body.email }, {
-// mobile: req.body.mobile }] });         if (existingUser) {
-// res.render('userregister', { message: "User already exists with this email or
-// mobile number" });         } else {             const newUser = new user({
-// name: req.body.name,                 email: req.body.email, password:
-// spassword,                 mobile: req.body.mobile,             }); const
-// userData = await newUser.save();             if (userData) {
-// req.session.user_id = userData.id;                 res.redirect('/userhome')
-// } else {                 res.render('userregister', { message: "Registration
-// failed" });             }         }     } catch (error) {
-// console.log(error.message);     } } verify signup
 
-const verifySignup = async (req, res, next) => {
+const verifySignup = async (req, res) => {
 
     req.session.userdata = req.body
-    const found = await user.findOne({name: req.body.name})
+    const found = await user.findOne({email: req.body.email})
     if (found) {
-        res.render('userregister', {message: "username already exist ,try another"});
+        res.render('userregister', {message: "email or mobile already exist"});
     } else if (req.body.name == '' || req.body.email == '' || req.body.password == '' || req.body.mobile == '') {
         res.render('signup', {message: "All fields are required"});
     } else {

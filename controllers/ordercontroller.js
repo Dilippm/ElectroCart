@@ -3,6 +3,7 @@ const User = require('../models/userData');
 const Order = require('../models/orderData');
 const crypto=require('crypto');
 const Razorpay = require('razorpay');
+const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 
  var instance = new Razorpay({
@@ -88,7 +89,8 @@ const successLoad = async (req, res) => {
           total: orders.total,
           deliveryAddress: addressDetails, // set the delivery address to the selected address details
           paymentType: orders.test,
-          status:"Processing"
+          status:"Processing",
+          orderId:`${uuidv4()}`
         })
         const saveData = await order.save()
 
@@ -148,7 +150,8 @@ const successLoad = async (req, res) => {
             total: orders.total,
             deliveryAddress: addressDetails, // set the delivery address to the selected address details
             paymentType: orders.test,
-            status: "unpaid"
+            status: "Processing",
+            orderId:`${uuidv4()}`
           });
           const saveData = await order.save();
       

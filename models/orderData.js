@@ -12,7 +12,7 @@ const orderData = new mongoose.Schema({
     type: String,
     unique: true,
     required: true,
-    default: `order_id_${uuidv4()}`, // generate a custom order ID using uuid
+    //default: `order_id_${uuidv4()}`, // generate a custom order ID using uuid
   },
   deliveryAddress: {
     type: Array,
@@ -48,7 +48,7 @@ const orderData = new mongoose.Schema({
   },
   status: {
     type: String,
-    default: 'pending',
+    default: 'Processing',
   },
   orderStatus: [
     {

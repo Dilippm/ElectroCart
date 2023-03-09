@@ -59,6 +59,7 @@ const loadDashboard = async (req, res) => {
     const lastWeek = new Date();
     lastWeek.setDate(lastWeek.getDate() - 7);
     const usersForTheLastWeek = await User.find({ date: { $gte: lastWeek } });
+    
     const salesChart = await Order.aggregate([
       {
         $group: {
@@ -90,6 +91,56 @@ const loadDashboard = async (req, res) => {
     const UPI = await Order.find({ paymentType: 'UPI' }).count();
     const COD = await Order.find({ paymentType: 'COD' }).count();
 
+    const topSellingProducts = await Order.aggregate([
+      { $unwind: '$product' },
+      
+      {
+        $group: {
+          _id: '$product.productId',
+          orderedQuantities: { $push: '$product.quantity' },
+          totalRevenue: { $sum: { $multiply: ['$product.quantity', '$product.price'] } },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          totalQuantityOrdered: {
+            $reduce: {
+              input: '$orderedQuantities',
+              initialValue: 0,
+              in: { $add: ['$$value', '$$this'] }
+            }
+          },
+          totalRevenue: 1
+        }
+      },
+      {
+        $lookup: {
+          from: 'products',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'product',
+        },
+      },
+      { $unwind: '$product' },
+      { $sort: { totalQuantityOrdered: -1 } },
+      { $limit: 10 }, // limit to top 10 products
+    ]);
+
+   const recentSales = await Order.find({})
+  .sort({ date: -1 })
+  .limit(10)
+  .populate('userId', 'name') // populate user name
+  .populate({
+    path: 'product.productId',
+    select: 'productName price', // select product name and price
+  })
+  .populate({
+    path: 'orderStatus',
+    select: 'status', // select only the status field
+    
+  })
+  .exec();
     res.render('dashboard', {
       totalUsers,
       salesCount,
@@ -108,6 +159,8 @@ const loadDashboard = async (req, res) => {
       sales,
       date,
       moment,
+      topSellingProducts,
+      recentSales
     });
   } catch (error) {
     console.log(error.message);
@@ -124,20 +177,20 @@ const adminLogout = async (req, res) => {
   }
 }
 
-const viewsalesReport = async (req, res) => {
+const viewDailySalesReport = async (req, res) => {
   try {
     const orders = await Order
       .find()
       .populate({ path: "product.productId", select: "productName price" });
 
-    // Create a new object to store total sales for each product by month
-    const salesByMonthAndProduct = {};
+    // Create a new object to store total sales for each product by day
+    const salesByDayAndProduct = {};
 
-    // Iterate over each order and update salesByMonthAndProduct with the total
-    // sales for each product by month
+    // Iterate over each order and update salesByDayAndProduct with the total
+    // sales for each product by day
     orders.forEach((order) => {
       const orderDate = new Date(order.date);
-      const month = orderDate.toLocaleString("default", { month: "long" });
+      const day = orderDate.toISOString().substring(0, 10);
 
       order
         .product
@@ -145,15 +198,15 @@ const viewsalesReport = async (req, res) => {
           const productName = product.productId.productName;
           const productSalesTotal = product.quantity * product.productId.price;
 
-          if (!(month in salesByMonthAndProduct)) {
-            salesByMonthAndProduct[month] = {};
+          if (!(day in salesByDayAndProduct)) {
+            salesByDayAndProduct[day] = {};
           }
 
-          if (productName in salesByMonthAndProduct[month]) {
-            salesByMonthAndProduct[month][productName].quantitySold += product.quantity;
-            salesByMonthAndProduct[month][productName].totalSales += productSalesTotal;
+          if (productName in salesByDayAndProduct[day]) {
+            salesByDayAndProduct[day][productName].quantitySold += product.quantity;
+            salesByDayAndProduct[day][productName].totalSales += productSalesTotal;
           } else {
-            salesByMonthAndProduct[month][productName] = {
+            salesByDayAndProduct[day][productName] = {
               quantitySold: product.quantity,
               totalSales: productSalesTotal
             };
@@ -161,7 +214,7 @@ const viewsalesReport = async (req, res) => {
         });
     });
 
-    res.render("salesreport", { salesByMonthAndProduct });
+    res.render("salesreport", { salesByDayAndProduct });
   } catch (error) {
     console.log(error.message);
   }
@@ -173,5 +226,5 @@ module.exports = {
   loadDashboard,
 
   adminLogout,
-  viewsalesReport
+  viewDailySalesReport
 }

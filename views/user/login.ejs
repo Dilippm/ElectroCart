@@ -52,14 +52,14 @@
                       <button class="btn btn-primary w-100" type="submit">Login</button>
                     </div>
                     <div class="col-12">
-                        <li><a href="/register" style="color: red;">Dont have account? Please login</a></li>
+                        <li><a href="/register" style="color: blue;">Dont have account? Please login</a></li>
                       </div>
                    
                   </form>
                   <%
                     if(typeof message!== 'undefined'){
                       %>
-                      <h4><%= message %></h4>
+                      <h4 style=" color: red;"><i><%= message %></i></h4>
                       <%
 
                     }

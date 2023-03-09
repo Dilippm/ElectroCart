@@ -37,29 +37,29 @@ userRoute.use(express.static(path.join(__dirname,'public')))
 
 
 userRoute.get('/',userauth.islogout,usercontroller.guest);
-userRoute.get('/userhome',userauth.islogin,usercontroller.userHome)
+userRoute.get('/userhome',userauth.islogin,userauth.checkBlockedStatus,usercontroller.userHome)
 
 userRoute.get('/login',userauth.islogout,usercontroller.loadLogin);
 userRoute.get('/register',userauth.islogout,usercontroller.loadRegister);
 userRoute.get('/logout',userauth.islogin,usercontroller.userLogout);
-userRoute.get('/productview/:id',usercontroller.productView)
-userRoute.get('/cart',cartcontroller.viewCart);
-userRoute.get('/add-to-cart/:id',cartcontroller.addCart);
-userRoute.get('/deletecart/:id',cartcontroller.deleteCart);
+userRoute.get('/productview/:id',userauth.checkBlockedStatus,usercontroller.productView)
+userRoute.get('/cart',userauth.checkBlockedStatus,cartcontroller.viewCart);
+userRoute.get('/add-to-cart/:id',userauth.checkBlockedStatus,cartcontroller.addCart);
+userRoute.get('/deletecart/:id',userauth.checkBlockedStatus,cartcontroller.deleteCart);
 
 
-userRoute.get('/profile',usercontroller.profile);
-userRoute.get('/address',usercontroller.addressView);
-userRoute.get('/edit-user',usercontroller.editUser);
-userRoute.get('/addAddress',usercontroller.addAddress);
-userRoute.get('/editAddress/:id',usercontroller.editaddress);
-userRoute.get('/removeAddress/:id',usercontroller.removeAddress);
-userRoute.get('/checkout',ordercontroller.loadCheckOut);
+userRoute.get('/profile',userauth.checkBlockedStatus,usercontroller.profile);
+userRoute.get('/address',userauth.checkBlockedStatus,usercontroller.addressView);
+userRoute.get('/edit-user',userauth.checkBlockedStatus,usercontroller.editUser);
+userRoute.get('/addAddress',userauth.checkBlockedStatus,usercontroller.addAddress);
+userRoute.get('/editAddress/:id',userauth.checkBlockedStatus,usercontroller.editaddress);
+userRoute.get('/removeAddress/:id',userauth.checkBlockedStatus,usercontroller.removeAddress);
+userRoute.get('/checkout',userauth.checkBlockedStatus,ordercontroller.loadCheckOut);
 
-userRoute.get('/orderlist',usercontroller.viewOrders);
-userRoute.get('/details/:id',usercontroller.orderDetails);
-userRoute.get('/success',ordercontroller.orderConfirmation)
-userRoute.get('/products',usercontroller.allProductView)
+userRoute.get('/orderlist',userauth.checkBlockedStatus,usercontroller.viewOrders);
+userRoute.get('/details/:id',userauth.checkBlockedStatus,usercontroller.orderDetails);
+userRoute.get('/success',userauth.checkBlockedStatus,ordercontroller.orderConfirmation)
+userRoute.get('/products',userauth.checkBlockedStatus,usercontroller.allProductView)
 
 
 
