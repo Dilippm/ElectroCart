@@ -187,7 +187,15 @@
         title: 'Oops...',
         text: 'Select Payment Method.',
     })
-} else if (response.viewRazorpay) {
+}else if(response.address){
+	Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Select Delivery Address',
+    })
+
+}
+ else if (response.viewRazorpay) {
     razorpayPayment(response.order)
 }
                     },
@@ -246,5 +254,8 @@
                     }})
 
             }
+
+			
+
 		  </script>
 <%- include('../layout/user/footer.ejs')%>

@@ -116,17 +116,23 @@
 							<p><%=productdetails.description%> </p>
 
 							
-							<div class="add-to-cart">
+							<div class="product-btns" style="margin-bottom: 10px;">
+								<button class="add-to-wishlist btn btn-warning"
+																onclick="addtoWishlist('<%= productdetails._id %>')">
+																<i class="fa fa-heart-o"></i>
+																<span class="tooltipp" style="color: black;">Add to Wishlist</span>
+															</button>
 								
-									<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> <a href="/add-to-cart/<%= productdetails._id %>" style="color: black;">add to cart</a> </button>
-								
-	
 							</div>
-
-							<ul class="product-btns">
-								<li><a href="#"><i class="fa fa-heart-o"></i> add to wishlist</a></li>
+						</div>
+						<div class="add-to-cart" onclick="addToCart('<%= productdetails._id %>')">
+							<button class="add-to-cart-btn btn btn-danger">
+								<i class="fa fa-shopping-cart"></i>
 							
-							</ul>
+								
+						   Add to cart </button>
+						   
+						</div>
 
 							<ul class="product-links">
 								<li>Category:</li>
@@ -367,6 +373,72 @@
 		
 
 	
+		<script>
+			function addtoWishlist(proId) {
+				console.log(proId);
+				$.ajax({
+					url: '/addWishlist/' + proId, // replace with the URL of your server-side script
+					type: 'get', // use POST method
+		
+					success: (response) => {
+						console.log(response);
+						if (response.done) {
+							Swal.fire({
+								position: 'top-end',
+								icon: 'success',
+								title: 'Added to Whishlist',
+								showConfirmButton: false,
+								timer: 3000
+							})
+						} else if (response.exist) {
+							Swal.fire({
+								position: 'top-end',
+		
+								title: 'Already in Wishlist',
+								showConfirmButton: false,
+								timer: 3000
+							})
+						} else {
+							location.href = '/login'
+						}
+		
+					}
+				})
+			}
+		
+			function addToCart(proId) {
+				console.log(proId);
+				$.ajax({
+					url: '/add-to-cart/' + proId, // replace with the URL of your server-side script
+					type: 'get', // use POST method
+		
+					success: (response) => {
+						console.log(response);
+						if (response.done) {
+							Swal.fire({
+								position: 'top-end',
+								icon: 'success',
+								title: 'Added to Cart',
+								showConfirmButton: false,
+								timer: 1500
+							})
+						} else if (response.exist) {
+							Swal.fire({
+								position: 'top-end',
+		
+								title: 'Already in Cart',
+								showConfirmButton: false,
+								timer: 1500
+							})
+						} else {
+							location.href = '/login'
+						}
+		
+					}
+				})
+			}
+		
+		</script>
 
 
         <%- include('../layout/user/footer.ejs')%>

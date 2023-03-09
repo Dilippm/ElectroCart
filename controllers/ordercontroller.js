@@ -92,7 +92,12 @@ const successLoad = async (req, res) => {
           status:"Processing",
           orderId:`${uuidv4()}`
         })
-        const saveData = await order.save()
+        if (!addressDetails) {
+          return res.json({ address: true });
+        }else{
+          const saveData = await order.save();
+
+        }
 
         const removing = await User.updateOne({ _id: req.session.user_id }, {
           $pull: {
@@ -153,7 +158,13 @@ const successLoad = async (req, res) => {
             status: "Processing",
             orderId:`${uuidv4()}`
           });
-          const saveData = await order.save();
+          if (!addressDetails) {
+            return res.json({ address: true });
+          }else{
+            const saveData = await order.save();
+
+          }
+          
       
           const removing = await User.updateOne(
             { _id: req.session.user_id },
@@ -173,7 +184,7 @@ const successLoad = async (req, res) => {
               receipt:""+latestOrder._id
             };
             instance.orders.create(options,function(err,order){
-              console.log("doooooooone");
+              //console.log("doooooooone");
               res.json({viewRazorpay:true,order})  
             });
           } else {
@@ -201,7 +212,7 @@ const successLoad = async (req, res) => {
 const PaymentVerified= async(req,res)=>{
   try {
    if(req.session.user_id){
-        console.log("final");
+        //console.log("final");
        
        const details=req.body
    
@@ -213,7 +224,7 @@ const PaymentVerified= async(req,res)=>{
 
        
        if(hmac==details['payment']['razorpay_signature']){
-         console.log("success");
+         //console.log("success");
          const latestOrder = await Order
          .findOne({})
          .sort({ date: -1 })

@@ -15,6 +15,7 @@ const bodyparser=require('body-parser')
 const usercontroller=require('../controllers/usercontroller')
 const cartcontroller=require('../controllers/cartcontroller')
 const ordercontroller=require('../controllers/ordercontroller')
+const wishlistcontroller=require('../controllers/wishlistcontroller')
 // morgan
 const logger=require('morgan');
 userRoute.use(logger('dev'));
@@ -60,6 +61,9 @@ userRoute.get('/orderlist',userauth.checkBlockedStatus,usercontroller.viewOrders
 userRoute.get('/details/:id',userauth.checkBlockedStatus,usercontroller.orderDetails);
 userRoute.get('/success',userauth.checkBlockedStatus,ordercontroller.orderConfirmation)
 userRoute.get('/products',userauth.checkBlockedStatus,usercontroller.allProductView)
+userRoute.get('/wishlist',userauth.checkBlockedStatus,wishlistcontroller.loadWishlist)
+userRoute.get('/addWishlist/:id',userauth.checkBlockedStatus,wishlistcontroller.addToWishlist)
+userRoute.get('/removeWishlist/:id',userauth.checkBlockedStatus,wishlistcontroller.removeWishlist)
 
 
 
@@ -84,7 +88,7 @@ userRoute.post ('/change-Product-Quantity',cartcontroller.changeQuantity);
 userRoute.post('/checkout',ordercontroller.successLoad);
 userRoute.post('/verify-payment',ordercontroller.PaymentVerified)
 userRoute.post('/cancel-order',usercontroller.cancelOrder);
-
+userRoute.post('/addWishlist/:id',userauth.checkBlockedStatus,wishlistcontroller.addToWishlist)
 
 
 

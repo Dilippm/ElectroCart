@@ -236,7 +236,7 @@
                 <script>
                     const sales = <%- JSON.stringify(sales) %>;
                     const date = <%- JSON.stringify(date) %>;
-
+                
                     document.addEventListener("DOMContentLoaded", () => {
                         new ApexCharts(document.querySelector("#salesChart"), {
                             series: [
@@ -272,17 +272,18 @@
                                 width: 2
                             },
                             xaxis: {
-                                type: 'datetime',
+                                type: 'category',
                                 categories: date
                             },
                             tooltip: {
                                 x: {
-                                    format: 'dd/MM/yy HH:mm'
+                                    show: false
                                 }
                             }
                         }).render();
                     });
                 </script>
+                
                 <script>
                     const UPI = <%- JSON.stringify(UPI) %>;
                     const COD = <%- JSON.stringify(COD) %>;

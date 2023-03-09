@@ -48,13 +48,18 @@ const viewCart = async (req, res) => {
       const prodetails = await product.findOne({ _id: productId });
   
       if (req.session.user_id) {
+
+
+      
         const userId = req.session.user_id;
         const userDetail = await User.findOne({ _id: userId });
         const found = await User.findOne({ _id: userId, "cart.product": productId });
         const use = await User.findOne({ _id: userId });
   
         if (found) {
-          res.redirect('/cart');
+          const userId = req.session.user_id;
+          const deleteWishlist = await User.updateOne({ _id: userId }, { $pull: { wishlist: { product: productId } } })
+          res.json({ exist: true })
         } else {
           const cartInserted = await User.updateOne(
             { _id: userId },
@@ -72,8 +77,13 @@ const viewCart = async (req, res) => {
           );
   
           const userDetails = await User.findOne({ _id: userId });
+          const deleteWishlist = await User.updateOne({ _id: req.session.user_id }, { $pull: { wishlist: { product: productId } } })
+
+        
+          res.json({ done: true })
   
           res.render('cart', { userdetails: userDetails, cartData: cartData, users: true,use });
+          
         }
       } else {
         res.redirect('/login');
@@ -99,8 +109,7 @@ const viewCart = async (req, res) => {
           cartTotal += user.cart[i].productTotalPrice;
         }
         const updatedUser = await User.updateOne({ _id: userId }, { $set: { totalPrice: cartTotal } });
-  
-        res.redirect('/cart');
+        res.json({ done: true })
       } else {
         res.redirect('/login');
       }
@@ -142,7 +151,7 @@ for (let i = 0; i < cart.cart.length; i++) {
 
   cartTotal += cart.cart[i].productTotalPrice;
 }
-console.log(cartTotal);
+//console.log(cartTotal);
 const add = await User.updateOne({ _id: req.session.user_id }, {
   $set: { totalPrice: cartTotal }
 })

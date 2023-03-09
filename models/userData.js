@@ -77,6 +77,13 @@ const userData= new mongoose.Schema({
           },
         }
       ],
+      wishlist: [{
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "product",
+          required: true,
+        }
+      }]
     
 })
 

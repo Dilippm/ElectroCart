@@ -83,12 +83,21 @@
                             <i class="fa fa-star"></i>
                         </div>
                         <div class="product-btns">
-                            <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+                            <button class="add-to-wishlist"
+                                                            onclick="addtoWishlist('<%= data._id %>')">
+                                                            <i class="fa fa-heart-o"></i>
+                                                            <span class="tooltipp">Add to Wishlist</span>
+                                                        </button>
                             <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
                         </div>
                     </div>
-                    <div class="add-to-cart">
-                        <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i><a href="/add-to-cart/<%= data._id %>" style="color: white;"  >add to cart</a></button>
+                    <div class="add-to-cart" onclick="addToCart('<%= data._id %>')">
+                        <button class="add-to-cart-btn">
+                            <i class="fa fa-shopping-cart"></i>
+                            <i
+                            class="fa fa-shopping-cart"></i>
+                       Add to cart </button>
+                       
                     </div>
                 </div>
             </div>
@@ -99,5 +108,70 @@
   </div>
   <!-- /Products slick -->
   
+  <script>
+    function addtoWishlist(proId) {
+        console.log(proId);
+        $.ajax({
+            url: '/addWishlist/' + proId, // replace with the URL of your server-side script
+            type: 'get', // use POST method
 
+            success: (response) => {
+                console.log(response);
+                if (response.done) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Added to Whishlist',
+                        showConfirmButton: false,
+                        timer: 3000
+                    })
+                } else if (response.exist) {
+                    Swal.fire({
+                        position: 'top-end',
+
+                        title: 'Already in Wishlist',
+                        showConfirmButton: false,
+                        timer: 3000
+                    })
+                } else {
+                    location.href = '/login'
+                }
+
+            }
+        })
+    }
+
+    function addToCart(proId) {
+        console.log(proId);
+        $.ajax({
+            url: '/add-to-cart/' + proId, // replace with the URL of your server-side script
+            type: 'get', // use POST method
+
+            success: (response) => {
+                console.log(response);
+                if (response.done) {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Added to Cart',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                } else if (response.exist) {
+                    Swal.fire({
+                        position: 'top-end',
+
+                        title: 'Already in Cart',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                } else {
+                    location.href = '/login'
+                }
+
+            }
+        })
+    }
+
+</script>
 <%- include('../layout/user/footer.ejs')%>

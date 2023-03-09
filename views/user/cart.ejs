@@ -43,7 +43,7 @@
         </nav>
         <!-- /NAVIGATION -->
 
-       <section>
+       <section id="cart">
         <div class="container" style="display: flex; justify-content: center;">
 
                 
@@ -103,11 +103,10 @@
                                 </span> </strong>
                             </td>
                             <td class="nk-product-cart-remove">
-                                <button class="btn btn-danger">
-                                    <a href="/deletecart/<%= element.product._id %>" style="color: white;">
-                                        <span class="material-symbols-outlined">Remove</span>
-                                    </a>
-                                </button>
+                                <button  onclick="validate('<%= element.product._id %>')"  type="button" class="btn btn-danger btn-sm mb-2" data-mdb-toggle="tooltip"
+                                    title="Move to the wish list">
+                                    <i class="fa fa-trash"></i>
+                                  </button>
                             </td>
                         </tr>
                     <% }); %>
@@ -173,6 +172,41 @@
         }
     }
       </script>
+      <script>
+        function validate(deleteId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You wan't to remove from Cart!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'yes,remove!'
+            }).then((result) => {
+                   if (result.isConfirmed) {
+                                $.ajax({
+                                    url: '/deletecart/' + deleteId,
+                                    method: 'get',
+                                    success: (response) => {
+                                      if(response.done){    
+                                        Swal.fire({
+                                            title: 'Removed!',
+                                            text: 'Successfully removed ',
+                                            icon: 'success',
+                                            showConfirmButton: false
+                                        })
+                                        $('#cart').load('/cart #cart')
+                                        
+                                    }else if(response.logout){
+                                      location.href = '/login'
+                                    }
+                                  }
+                                })
+                            }
+            })
+        }
+      </script>
+      
            
 
             
