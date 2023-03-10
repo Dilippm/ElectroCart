@@ -16,6 +16,7 @@ const usercontroller=require('../controllers/usercontroller')
 const cartcontroller=require('../controllers/cartcontroller')
 const ordercontroller=require('../controllers/ordercontroller')
 const wishlistcontroller=require('../controllers/wishlistcontroller')
+const couponController =require('../controllers/couponcontroller')
 // morgan
 const logger=require('morgan');
 userRoute.use(logger('dev'));
@@ -89,7 +90,7 @@ userRoute.post('/checkout',ordercontroller.successLoad);
 userRoute.post('/verify-payment',ordercontroller.PaymentVerified)
 userRoute.post('/cancel-order',usercontroller.cancelOrder);
 userRoute.post('/addWishlist/:id',userauth.checkBlockedStatus,wishlistcontroller.addToWishlist)
-
+userRoute.post('/applycoupon',couponController.applyCoupon)
 
 
 

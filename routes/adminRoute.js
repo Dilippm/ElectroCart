@@ -22,7 +22,7 @@ const productcontroller = require('../controllers/productcontroller')
 const adminusercontroller = require('../controllers/adminusercontroller')
 const adminordercontroller= require('../controllers/adminordercontroller');
 const adscontroller= require('../controllers/adscontroller');
-
+const couponcontroller =require('../controllers/couponcontroller');
 
 adminRoute.set('view engine','ejs')
 adminRoute.set('views','./views/admin')
@@ -86,7 +86,13 @@ adminRoute.get('/editAdd/:id',auth.isLogin,adscontroller.loadEditBanner);
 adminRoute.post('/editAdd/:id',upload.array('image',1),adscontroller.saveEditBanner);
 adminRoute.get('/ads/deleteadd/:id',auth.isLogin,adscontroller.deleteAdd);
 
-
+// coupon
+adminRoute.get('/coupons',auth.isLogin,couponcontroller.loadCoupons)
+adminRoute.get('/addCoupons',auth.isLogin,couponcontroller.loadAddCoupon)
+adminRoute.post('/addCoupons',couponcontroller.insertCoupon)
+adminRoute.get('/deleteCoupon/:id',auth.isLogin,couponcontroller.deleteCoupon)
+adminRoute.get('/EditCoupon/:id',auth.isLogin,couponcontroller.EditCoupon);
+adminRoute.post('/EditCoupon/:id',couponcontroller.SaveCoupon);
 
 
 

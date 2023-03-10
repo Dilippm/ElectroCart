@@ -103,44 +103,95 @@
 							<div class="order-products">
 								<div class="order-col">
 									<div><%= key.product.productName %></div>
-									<div>₹. <%=key.productTotalPrice %></div>
+									<div style="padding-left: 300px;">₹.<%=key.productTotalPrice %></div>
 										
 										
 									<input type="hidden" name="proQ" value="  <%=key.quantity %>">  
 									<input type="hidden" name="qntyPrice" value="<%=key.productTotalPrice %>"> 
+									<input type="hidden" name="code" id="copcode" value=""> 
 								</div>
 								
 							</div>
                             <% } %>
+							<div class="row justify-content-between">
+								<div class="col-4">
+									<p class="mb-1"><b>Subtotal</b></p>
+								</div>
+								<div class="flex-sm-col col-auto">
+									<p class="mb-1"><b>
+											<%= datas.totalPrice %>
+												<input type="hidden"   name="total"
+													value="<%= datas.totalPrice %>">
+										</b></p>
+								</div>
+							</div>
+							<div class="row justify-content-between">
+								<div class="col">
+									<p class="mb-1"><b>Discount</b></p>
+								</div>
+								<div class="flex-sm-col col-auto">
+									<p id="discount" class="mb-1"><b>0</b></p>
+								</div>
+								<input id="discount1" name="discount1" type="hidden"
+									value="">
+							</div>
 							<div class="order-col">
 								<div>Shiping</div>
 								<div><strong>FREE</strong></div>
 							</div>
 							<div class="order-col">
 								<div><strong>TOTAL</strong></div>
-								<div><strong class="order-total">₹. <%= datas.totalPrice %></strong></div>
+								<div><strong id="total" class="order-total">₹. <%= datas.totalPrice %></strong></div>
 								
-								<input type="hidden" name="total" value="<%=datas.totalPrice %>"><del class="product-old-price">₹ <%= (datas.totalPrice * 1.05).toFixed(2) %></del>
+								<input type="hidden"  id="total1" name="total1" value="<%=datas.totalPrice %>">
+								
+							</div>
+							<div class="order-col">
+								<form id="formCoupon">
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label for="NAME" class="small text-muted mb-1">Coupon
+												Code</label>
+											<input type="text" form="formCoupon"
+												class="form-control form-control-sm" name="code"
+												id="NAMEcode" name="code" aria-describedby="helpId">
+
+										</div>
+										<button class="btn btn-warning"
+											style=" color: black; border-radius: 5px;"
+											onclick="applyCoupon('<%= datas.totalPrice %>', $('#NAMEcode').val())"
+											form="formCoupon"> <b>Redeem Now</b> </button>
+
+									</div>
+									<div class="col-sm-4">
+										<div class="form-group">
+
+										</div>
+
+									</div>
+								</form>
+								
 								
 							</div>
 						</div>
-						<label for="NAME" class="small text-muted mb-1">Payment
-							Method</label><br><br>
+						<div>
 							
-						<div class="form-group">
-							<input type="radio" name="test" value="COD"> Cash on
-							delivery<br><br>
 						</div>
-						<div class="form-group">
-							<input type="radio" name="test" value="UPI">UPI<br><br>
+						<div>
+							<label for="NAME" class="small text-muted mb-1">Payment
+								Method</label><br><br>
+								
+							<div class="form-group">
+								<input type="radio" name="test" value="COD"> Cash on
+								delivery<br><br>
+							</div>
+							<div class="form-group">
+								<input type="radio" name="test" value="UPI">UPI<br><br>
+							</div>
+
 						</div>
-						<!-- <div class="input-checkbox">
-							<input type="checkbox" id="terms">
-							<label for="terms">
-								<span></span>
-								I've read and accept the <a href="#">terms & conditions</a>
-							</label>
-						</div> -->
+						
+						
 						<div class="row mb-md-5">
 							<div class="col">
 								<button type="submit" name="" id=""
@@ -167,6 +218,70 @@
 			function updateDeliveryAddress(address) {
 			  document.getElementById('delivery-address').value = address;
 			}
+
+			function applyCoupon(total, code) {
+
+$.ajax({
+
+	url: '/applyCoupon',
+	data: {
+		total: total,
+		code: code
+	},
+	method: "post",
+	success: (response) => {
+		if (response.datefailed) {
+			console.log("failed to match");
+			Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: 'Coupon Expired.',
+			})
+		} else if (response.amountnokay) {
+			console.log("pattilla");
+			Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: 'To access this coupen buy something more.',
+
+			})
+		} else if (response.amountokay) {
+			console.log("vangaam")
+			
+			console.log("ooookayyy");
+			
+			$('#code').html(response.code)
+			$('#discount').html(response.discountValue)
+			$('#discount1').html(response.discountValue)
+			$('#total').html(response.value)
+			$('#total1').attr({value:response.value})
+			$('#copcode').attr({value:response.code})
+			
+			Swal.fire(
+				'Good job!',
+				'Coupen granted!',
+				'success'
+			)
+			console.log("ttttt" + response.value);
+			console.log("dissss" + response.discountValue);
+
+		} else if (response.used) {
+			Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: 'Already Used.',
+			})
+		} else if (response.invalid) {
+			Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: 'Invalid Coupon.',
+			})
+		}
+
+	}
+})
+}
 		 
 			$("#checkout-form").submit((e)=>{
 				e.preventDefault();

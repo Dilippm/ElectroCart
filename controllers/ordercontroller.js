@@ -1,6 +1,7 @@
 const Product = require('../models/productData');
 const User = require('../models/userData');
 const Order = require('../models/orderData');
+const Coupon=require('../models/couponData');
 const crypto=require('crypto');
 const Razorpay = require('razorpay');
 const { v4: uuidv4 } = require('uuid');
@@ -86,11 +87,13 @@ const successLoad = async (req, res) => {
         const order = new Order({
           userId: id,
           product: orders.product,
-          total: orders.total,
+          total: orders.total1,
           deliveryAddress: addressDetails, // set the delivery address to the selected address details
           paymentType: orders.test,
           status:"Processing",
-          orderId:`${uuidv4()}`
+          orderId:`${uuidv4()}`,
+          date:Date.now(),
+          discount:req.body.discount1
         })
         if (!addressDetails) {
           return res.json({ address: true });
@@ -98,7 +101,8 @@ const successLoad = async (req, res) => {
           const saveData = await order.save();
 
         }
-
+        await Coupon.updateOne({code:req.body.code},{$push:{userUsed:userid._id}})  
+        console.log(req.body.code);
         const removing = await User.updateOne({ _id: req.session.user_id }, {
           $pull: {
             cart: { product: { $in: productId } }
@@ -152,11 +156,13 @@ const successLoad = async (req, res) => {
           const order = new Order({
             userId: id,
             product: orders.product,
-            total: orders.total,
+            total: orders.total1,
             deliveryAddress: addressDetails, // set the delivery address to the selected address details
             paymentType: orders.test,
             status: "Processing",
-            orderId:`${uuidv4()}`
+            orderId:`${uuidv4()}`,
+            date:Date.now(),
+            discount:req.body.discount1,
           });
           if (!addressDetails) {
             return res.json({ address: true });
@@ -165,7 +171,7 @@ const successLoad = async (req, res) => {
 
           }
           
-      
+       await Coupon.updateOne({code:req.body.code},{$push:{userUsed:userid._id}}) 
           const removing = await User.updateOne(
             { _id: req.session.user_id },
             {
@@ -201,7 +207,7 @@ const successLoad = async (req, res) => {
               res.redirect('/login')
             }
           } catch (error) {
-            console.log(error);
+            console.log(error.message);
           }
         }
         
