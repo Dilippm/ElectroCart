@@ -40,14 +40,14 @@
                         <label for="">Quantity</label>
                         <input type="number" name="quantity" class="form-control" required value="<%= product.quantity %>" min="0">
     
-                         <div>
-                            <% product.images.forEach((element,index) => {%>
-                            <img src="/productImages/<%=element%>" alt="" width="50px" height="50px">
-                            <% });%>
-                         </div>
+                        
     
                         <label for="">Images</label>
-                        <input multiple type="file" name="images" class="form-control" accept="image/*" >
+                        <input type="file" name="images" id="file-input" class=" form-control" accept= 'image/*' multiple>
+                        <% for (let i=0; i< product.images.length;i++){ %>
+                        <img src="/productImages/<%= product.images[i] %>" width="100" height="100" class="img-thumbnail mt-1">
+                        <% } %>
+                        <div class="previewImages"></div>
     
                          
                         
@@ -68,7 +68,26 @@
     
     </main><!-- End #main -->
     
-    
+    <script>
+        // Get the file input element
+        $(document).ready(function(){
+let imgPreview = function(input,imagePlace){
+if(input.files){
+let allFiles = input.files.length
+for(i=0;i<allFiles;i++){
+let reader = new FileReader()
+reader.onload = function(event){
+  $($.parseHTML("<img>")).attr("src",event.target.result).appendTo(imagePlace)
+}
+reader.readAsDataURL(input.files[i])
+}
+}
+}
+$("#file-input").on("change",function(){
+imgPreview(this,"div.previewImages")
+})
+})
+    </script>
 
 
 <%- include('../layout/admin/footer.ejs')%>

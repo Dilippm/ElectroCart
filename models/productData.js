@@ -23,10 +23,11 @@ const productData = mongoose.Schema({
     type: Number,
     required: true
   },
-  images: {
-    type: Array,
-    required: true
-  }
+  images:[{
+     
+    type:String,
+    required:true,
+  }],
 });
 
 module.exports =mongoose.model('product',productData);
