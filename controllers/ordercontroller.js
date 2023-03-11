@@ -200,7 +200,91 @@ const successLoad = async (req, res) => {
         } catch (error) {
           console.log(error);
         }
-      } else {
+       } else if (method == "wallet") {
+        const userid = await User.findOne({ _id: req.session.user_id });
+          const id = userid;
+        let userdata = await User.findOne({ _id: req.session.user_id });
+      
+        if (req.body.total <= userdata.wallet) {
+          const userid = await User.findOne({ _id: req.session.user_id });
+          const id = userid;
+      
+          const orders = req.body;
+          const orderDetails = [];
+          const productId = req.body.proId;
+          orders.product = orderDetails;
+      
+          if (!Array.isArray(orders.proId)) {
+            orders.proId = [orders.proId];
+          }
+          if (!Array.isArray(orders.singlePrice)) {
+            orders.singlePrice = [orders.singlePrice];
+          }
+      
+          if (!Array.isArray(orders.proQ)) {
+            orders.proQ = [orders.proQ];
+          }
+      
+          if (!Array.isArray(orders.qntyPrice)) {
+            orders.qntyPrice = [orders.qntyPrice];
+          }
+      
+          for (let i = 0; i < orders.proId.length; i++) {
+            const productId = orders.proId[i];
+            const quantity = orders.proQ[i];
+            const singleTotal = orders.qntyPrice[i];
+            const singlePrice = orders.singlePrice[i];
+            orderDetails.push({
+              productId: productId,
+              quantity: quantity,
+              singleTotal: singleTotal,
+              singlePrice: singlePrice,
+            });
+          }
+          const addressId = req.body.address; // get the selected address ID from the form
+          const userData = await User.findById(id);
+          const addressDetails = userData.address.find(address => address._id == addressId); // find the selected address details from the user's address array
+          const ordersave = new Order({
+            userId: id,
+            product: orders.product,
+            total: req.body.total1,
+            orderId: `order_id_${uuidv4()}`,
+            deliveryAddress: addressDetails, 
+            paymentType: orders.test,
+            date: Date.now(),
+            discount: req.body.discount1,
+            coupon: req.body.code,
+          });
+          const saveData = await ordersave.save();
+      
+          // Reduce wallet balance
+          const balance = userdata.wallet - req.body.total1;
+          const walletMinus = await User.updateOne(
+            { _id: req.session.user_id },
+            { $set: { wallet: balance } }
+          );
+      
+          // Update coupon usage
+          await Coupon.updateOne(
+            { code: req.body.code },
+            { $push: { userUsed: userid._id } }
+          );
+      
+          // Remove items from cart and reset total price
+          const removing = await User.updateOne(
+            { _id: req.session.user_id },
+            {
+              $pull: { cart: { product: { $in: productId } } },
+              $set: { totalPrice: 0 },
+            }
+          );
+          res.json({ status: true });
+        } else {
+          res.json({ insufficiant: true });
+        }
+      }
+      
+       else {
         res.json({ radio: true });
       }
             } else {

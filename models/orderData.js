@@ -62,6 +62,9 @@ const orderData = new mongoose.Schema({
       },
     },
   ],
+  returnReason:{
+    type:String,
+   }
 });
 
 

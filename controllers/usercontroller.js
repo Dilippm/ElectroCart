@@ -406,6 +406,7 @@ const viewOrders = async (req, res) => {
   .find({ userId: userId })
   .populate('product.productId')
   .sort({ date: -1 });
+ 
             res.render('orderlist', {
                 users,
                 use: await user.findById(userId),
@@ -421,32 +422,33 @@ const viewOrders = async (req, res) => {
 };
 const cancelOrder = async (req, res) => {
     try {
-        const orderId = req.body.orderId;
-
-        // Find the order to cancel
-        const orderToCancel = await order
-            .findOne({_id: orderId})
-            .populate('product.productId');
-
-        // Add the "Cancelled" status to the order status array
-        orderToCancel
-            .orderStatus
-            .push({status: 'Cancelled', date: new Date()});
-        await orderToCancel.save();
-
-        // Update the status of the order to "Cancelled"
-        await orderToCancel.updateOne({status: 'Cancelled'});
-
-        await orderToCancel.save();
-
-        res.send('Order cancelled successfully');
+      const orderId = req.body.orderId;
+  
+      // Find the order to cancel
+      const orderToCancel = await order.findOne({_id: orderId}).populate('product.productId');
+  
+      // Update the order status and status field
+      orderToCancel.orderStatus.push({status: 'Cancelled', date: new Date()});
+      orderToCancel.status = "Cancelled";
+      await orderToCancel.save();
+  
+      // Update the quantity of products
+      for (let i = 0; i < orderToCancel.product.length; i++) {
+        await product.updateOne({_id: orderToCancel.product[i].productId}, {$inc: {quantity: orderToCancel.product[i].quantity}});
+      }
+  
+      // Update user's wallet balance if payment method is "wallet" or "UPI"
+      if (orderToCancel.paymentType && (orderToCancel.paymentType === "wallet" || orderToCancel.paymentType === "UPI")) {
+        await user.updateOne({_id: orderToCancel.userId}, {$inc: {wallet: orderToCancel.total}});
+      }
+  
+      res.send('Order cancelled successfully');
     } catch (error) {
-        console.log(error.message);
-        res
-            .status(500)
-            .send('Error cancelling order');
+      console.log(error.message);
+      res.status(500).send('Error cancelling order');
     }
-};
+  };
+  
 
 const orderDetails = async (req, res) => {
     try {
@@ -497,7 +499,34 @@ const allProductView = async (req, res) => {
         console.log(error.message);
     }
 }
-
+const returnOrder = async (req, res) => {
+    try {
+      if (req.session.user_id) {
+        //console.log(req.body);
+        if (req.body.one == undefined) {
+          res.json({ error: true });
+        } else {
+          const updateOrder = await order.updateOne(
+            { _id: req.body.order },
+            {
+              $set: {
+                returnReason: req.body.one,
+                status: "Return Pending",
+              },
+            }
+          );
+          //console.log(updateOrder);
+          res.json({ status: true });
+        }
+      } else {
+        res.redirect("/login");
+      }
+    } catch (error) {
+      console.log(error.message);
+      res.json({ error: true });
+    }
+  };
+  
 module.exports = {
     guest,
     userHome,
@@ -523,6 +552,7 @@ module.exports = {
     viewOrders,
     cancelOrder,
     orderDetails,
-    allProductView
+    allProductView,
+    returnOrder
 
 }

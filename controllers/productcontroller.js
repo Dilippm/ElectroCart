@@ -163,7 +163,7 @@ const UpdateProduct = async (req, res) => {
           .resize({ width: 500, height: 500 })
           .jpeg({
             quality: 100,
-            chromaSubsampling: '4:4:4'
+            // chromaSubsampling: '4:4:4'
           })
           .toFile(`public/productImages/${newFilename}`);
         imgArray.push(newFilename);

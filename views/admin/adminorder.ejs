@@ -25,6 +25,7 @@
           <th>Date</th>
 
           <th>status</th>
+        
           <th>Details</th>
           
          
@@ -51,31 +52,33 @@
               <td><%= new Date(order[i].date).toLocaleDateString() %></td>
 
               <td>
-                <% if (orderDetail[i].status === "Cancelled" ||orderDetail[i].status === "unpaid") { %>
-                  <%= orderDetail[i].status %>
+                <% if (orderDetail[i].status === "Cancelled" || orderDetail[i].status === "unpaid" || orderDetail[i].status === "Return Pending" || orderDetail[i].status === "Delivered") { %>
+                    <%= orderDetail[i].status %>
                 <% } else { %>
-                  <form action="/admin/order/change-order-status" method="post">
-                    <input type="hidden" name="orderId" value="<%= orderDetail[i].orderId %>">
-                    <select name="status" onchange="this.form.submit()" <% if (orderDetail[i].status === "Canceled") { %>disabled<% } %>>
-                      <% if (orderDetail[i].status === "Delivered") { %>
-                        <option value="Delivered" selected>Delivered</option>
-                      <% } else if (orderDetail[i].status === "Shipped") { %>
-                        <option value="Shipped" selected>Shipped</option>
-                        <option value="Delivered">Delivered</option>
-                      <% } else if (orderDetail[i].status === "Processing") { %>
-                        <option value="Processing" selected>Processing</option>
-                        <option value="Shipped">Shipped</option>
-                        <option value="Delivered">Delivered</option>
-                      <% } else { %>
-                        <option value="Pending" selected>Pending</option>
-                        <option value="Processing">Processing</option>
-                        <option value="Shipped">Shipped</option>
-                        <option value="Delivered">Delivered</option>
-                      <% } %>
-                    </select>
-                  </form>
+                    <form action="/admin/order/change-order-status" method="post">
+                        <input type="hidden" name="orderId" value="<%= orderDetail[i].orderId %>">
+                        <select name="status" onchange="this.form.submit()" <% if (orderDetail[i].status === "Cancelled" || orderDetail[i].status === "Return Pending" || orderDetail[i].status === "Delivered") { %>disabled<% } %>>
+                            <% if (orderDetail[i].status === "Delivered") { %>
+                                <option value="Delivered" selected>Delivered</option>
+                            <% } else if (orderDetail[i].status === "Shipped") { %>
+                                <option value="Shipped" selected>Shipped</option>
+                                <option value="Delivered">Delivered</option>
+                            <% } else if (orderDetail[i].status === "Processing") { %>
+                                <option value="Processing" selected>Processing</option>
+                                <option value="Shipped">Shipped</option>
+                                <option value="Delivered">Delivered</option>
+                            <% } else { %>
+                                <option value="Pending" selected>Pending</option>
+                                <option value="Processing">Processing</option>
+                                <option value="Shipped">Shipped</option>
+                                <option value="Delivered">Delivered</option>
+                            <% } %>
+                        </select>
+                    </form>
                 <% } %>
-              </td>
+            </td>
+       
+            
               
               <td> <a href="/admin/order/detail/<%= orderDetail[i].id %>">
             <i class="fas fa-eye" style="padding-right: 10px; color: black " ></i>
