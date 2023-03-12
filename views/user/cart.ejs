@@ -61,6 +61,7 @@
                         <th class="column-2" style="font-size: large;">Product Image</th>
                         <th class="column-3" style="font-size: large;">Price</th>
                         <th class="column-4" style="font-size: large;">Quantity</th>
+                  
                         <th class="column-5" style="font-size: large;">Total</th>
                         <th class="column-6" style="font-size: large;">Remove</th>
                     </tr>
@@ -68,6 +69,7 @@
                 <tbody>
                     
                     <% cartData.cart.forEach((element) => { %>
+                      <input type="hidden" class="<%= element.product._id %>" value="<%= element.product.quantity %>">
                         <tr class="table_row">
                             <td class="column-3">
                                 <b><%= element.product.productName %></b> 
@@ -82,7 +84,7 @@
                             </td>
                             <td class="column-3"> <b>₹<%= element.product.price %></b></td>
                             <td class="column-4">
-                               
+                              
 
 
                                 <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
@@ -97,6 +99,8 @@
                                     </div>
                                 </div>
                             </td>
+                          
+                            
                             <td class="column-3">
                                 <strong>Total: <span class="<%= element.product._id %>">
                                     <%= element.productTotalPrice %>
@@ -149,9 +153,14 @@
         function changeQuantity(proId, count, ptotal) {
           let quantity = parseInt(document.getElementById(proId).innerHTML)
           count = parseInt(count)
+          const stock= parseInt(document.getElementsByClassName(proId)[0].value)
           if(quantity<=1 && count==-1){
 
-}else{
+}else if(stock==quantity&&count==1){
+
+
+}else
+{
   
           $.ajax({
   
@@ -165,8 +174,10 @@
             success: (response) => {
               console.log(response);
               document.getElementById(proId).innerHTML = quantity + count
-              document.getElementsByClassName(proId)[0].innerHTML = response.productprice
+              document.getElementsByClassName(proId)[1].innerHTML = response.productprice
               document.getElementById('total').innerHTML=response.cartTotal
+            
+
             }
           })
         }

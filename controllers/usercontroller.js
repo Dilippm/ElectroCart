@@ -480,17 +480,89 @@ const allProductView = async (req, res) => {
             const users = true;
 
             const data = await product.find();
+            const cata = await product.find().populate("category")
 
-            const cata = await category.find();
+            const cat = await category.find();
             const use = await user.findOne({_id: id});
+            const topSellingProducts = await order.aggregate([
+                { $unwind: '$product' },
+                
+                {
+                  $group: {
+                    _id: '$product.productId',
+                    orderedQuantities: { $push: '$product.quantity' },
+                    totalRevenue: { $sum: { $multiply: ['$product.quantity', '$product.price'] } },
+                  },
+                },
+                {
+                  $project: {
+                    _id: 1,
+                    totalQuantityOrdered: {
+                      $reduce: {
+                        input: '$orderedQuantities',
+                        initialValue: 0,
+                        in: { $add: ['$$value', '$$this'] }
+                      }
+                    },
+                    totalRevenue: 1
+                  }
+                },
+                {
+                  $lookup: {
+                    from: 'products',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'product',
+                  },
+                },
+                { $unwind: '$product' },
+                { $sort: { totalQuantityOrdered: -1 } },
+                { $limit: 10 }, // limit to top 10 products
+              ]);
 
-            res.render('allproduct', {data, cata, use, users});
+            res.render('allproduct', {data, cat,cata, use, users,topSellingProducts});
         } else {
             const data = await product.find();
             const cat = await category.find();
+            const cata = await product.find().populate("category")
+            const topSellingProducts = await order.aggregate([
+                { $unwind: '$product' },
+                
+                {
+                  $group: {
+                    _id: '$product.productId',
+                    orderedQuantities: { $push: '$product.quantity' },
+                    totalRevenue: { $sum: { $multiply: ['$product.quantity', '$product.price'] } },
+                  },
+                },
+                {
+                  $project: {
+                    _id: 1,
+                    totalQuantityOrdered: {
+                      $reduce: {
+                        input: '$orderedQuantities',
+                        initialValue: 0,
+                        in: { $add: ['$$value', '$$this'] }
+                      }
+                    },
+                    totalRevenue: 1
+                  }
+                },
+                {
+                  $lookup: {
+                    from: 'products',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'product',
+                  },
+                },
+                { $unwind: '$product' },
+                { $sort: { totalQuantityOrdered: -1 } },
+                { $limit: 10 }, // limit to top 10 products
+              ]);
 
             const users = false;
-            res.render('allproduct', {data, cat, users})
+            res.render('allproduct', {data, cat, users,cata,topSellingProducts})
         }
 
     } catch (error) {

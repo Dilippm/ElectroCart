@@ -136,7 +136,22 @@ const changeQuantity = async (req, res) => {
           $inc: { 'cart.$.quantity': count }
   
         })
+
+        const cartqty = await User.findOne({_id: user._id, "cart.product": prodId},{"cart.quantity.$":1,_id:0})
+          
+      const qqq = cartqty.cart[0].quantity;
+      
+      const qty = (await product.findOne({_id: prodId},{_id:0,quantity:1})).quantity
+      // console.log(qty);
+      if(qqq > qty) {
+        var stockStatus = "OutOf Stock"       
+      }else{
+        var stockStatus =  "In Stock"
+      }
         const qnty = await User.findOne({ _id: req.session.user_id, "cart.product": prodId }, { "cart.$": 1 })
+
+       
+      
 
         const productprice = productdetails.price * qnty.cart[0].quantity
   
@@ -156,7 +171,7 @@ const add = await User.updateOne({ _id: req.session.user_id }, {
   $set: { totalPrice: cartTotal }
 })
 
-res.json({ success: true, productprice, cartTotal })
+res.json({ success: true, productprice, cartTotal,stockStatus })
 
   
       } else {
