@@ -61,10 +61,10 @@
                                                 </div>
                                                 <div class="ps-3">
                                                     <h6>
-                                                      <%= weeklyRevenue[0]?.totalAmount || 0 %>
+                                                        <%=weeklyRevenue[0].totalAmount %>
                                                     </h6>
-                                                  </div>
-                                                  
+
+                                                </div>
                                             </div>
                                         </div>
 
@@ -112,21 +112,14 @@
                                             <div id="salesChart"></div>
 
                                             <!-- End Line Chart -->
-                                            <!-- Status Chart -->
-                                            <h2>Status Chart</h2>
-                                            <div id="statusChart"></div>
 
-                                            <!-- Pie Chart -->
+                                            <!-- Line Chart -->
                                             <h2>Payment Method</h2>
                                             <div id="paymentChart"></div>
-                                            <!-- End Pie Chart -->
-
-                                            
 
                                         </div>
                                     </div>
                                 </div>
-                               
                             </div>
                             </div>
                              <!-- Right side columns -->
@@ -200,7 +193,7 @@
                       <td><% sale.product.forEach((product) => { %>
                         <b><%= product.productId.productName %></b> x <b><%= product.quantity %></b><br>
                       <% }) %></td>
-                      <td><b>₹</b><%= sale.total %></td>
+                      <td><b>₹</b><%= sale.total.toFixed(2) %></td>
                       
                     </tr>
                     <% }) %>
@@ -256,7 +249,7 @@
                                 height: 350,
                                 type: 'area',
                                 toolbar: {
-                                    show: true
+                                    show: false
                                 }
                             },
                             markers: {
@@ -294,23 +287,19 @@
                 <script>
                     const UPI = <%- JSON.stringify(UPI) %>;
                     const COD = <%- JSON.stringify(COD) %>;
-                    const wallet = <%- JSON.stringify(wallet) %>;
 
                     document.addEventListener("DOMContentLoaded", () => {
                         const chart = new ApexCharts(document.querySelector("#paymentChart"), {
                             // Set pie chart options
                             series: [
-                                UPI, COD,wallet
+                                UPI, COD
                             ],
                             chart: {
                                 width: 380,
-                                type: 'pie',
-                                toolbar: {
-                        show: true,
-                      }
+                                type: 'pie'
                             },
                             labels: [
-                                'UPI', 'COD','Wallet'
+                                'UPI', 'COD'
                             ],
                             responsive: [
                                 {
@@ -330,61 +319,5 @@
                         chart.render();
                     });
                 </script>
-             <script>
-                const processing = <%- JSON.stringify(processing) %>;
-                const delivered = <%- JSON.stringify(delivered) %>;
-                const cancelled = <%- JSON.stringify(cancelled) %>;
-                const shipped = <%- JSON.stringify(shipped) %>;
-                const returned = <%- JSON.stringify(Returned) %>;
-              
-                const categories = ['Processing', 'Delivered', 'Cancelled', 'Shipped', 'Returned'];
-              
-                const chartData = [
-                  { name: 'Processing', data: [processing] },
-                  { name: 'Delivered', data: [delivered] },
-                  { name: 'Cancelled', data: [cancelled] },
-                  { name: 'Shipped', data: [shipped] },
-                  { name: 'Returned', data: [returned] },
-                ];
-              
-                document.addEventListener('DOMContentLoaded', () => {
-                  new ApexCharts(document.querySelector('#statusChart'), {
-                    series: chartData,
-                    chart: {
-                      height: 350,
-                      type: 'bar',
-                      toolbar: {
-                        show: true,
-                      },
-                    },
-                    dataLabels: {
-                      enabled: false,
-                    },
-                    stroke: {
-                      show: true,
-                      width: 1,
-                      colors: ['#fff'],
-                    },
-                    xaxis: {
-                      categories,
-                      labels: {
-                        formatter: (val) => Math.round(val),
-                      },
-                    },
-                    yaxis: {
-                      title: {
-                        text: '',
-                      },
-                    },
-                    forceNiceScale: true,
-                    tooltip: {
-                      y: {
-                        formatter: (val) => Math.round(val),
-                      },
-                    },
-                  }).render();
-                });
-              </script>
-              
  
                 <%- include('../layout/admin/footer.ejs')%>

@@ -22,9 +22,6 @@ const userData= new mongoose.Schema({
         type:Boolean,
        default:false
     },
-    wallet:{
-      type:Number,
-     },
     cart: [{
       product: {
         type: mongoose.Schema.Types.ObjectId,
@@ -86,8 +83,7 @@ const userData= new mongoose.Schema({
           ref: "product",
           required: true,
         }
-      }],
-      
+      }]
     
 })
 

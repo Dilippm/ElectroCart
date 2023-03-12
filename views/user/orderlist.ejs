@@ -94,75 +94,12 @@
                         <td><%= orderDetail[i].total %></td>
                         <td><%=new Date(orderDetail[i].date).toLocaleDateString() %></td>
                         <td><%= orderDetail[i].status %></td>
-                        <td>
-                          <button class="btn btn-primary">
-                              <a href="/details/<%= orderDetail[i]._id %>" style="color: white;">Details</a>
-                          </button>
-                          <% if (orderDetail[i].status === 'Delivered') { %>
-                            <% let orderDate = new Date(orderDetail[i].date); %>
-                            <% let now = new Date(); %>
-                            <% let sevenDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7); %>
-                            <% if (orderDate >= sevenDaysAgo) { %>
-                              <% if (orderDetail[i].returnStatus) { %>
-                                Return Status: <%= orderDetail[i].returnStatus %>
-                              <% } else if (orderDetail[i].status !== 'Return pending') { %>
-                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalCenter" >
-                                  Return Order
-                                </button>
-                              <% } %>
-                            <% } %>
-                          <% } else if (orderDetail[i].status == 'Processing' && orderDetail[i].status !== 'Shipped') { %>
-                            <button class="btn btn-warning cancel-order" style="color: black;" data-order-id="<%= orderDetail[i]._id %>">Cancel</button>
+                        <td> <button  class="btn btn-primary"><a href="/details/<%= orderDetail[i]._id %>" style="color: white;">Details</a> </button>
+                          <% if (orderDetail[i].status !== 'Cancelled') { %>
+                            <button class="btn btn-warning cancel-order" style="color: black;" data-order-id="<%= orderDetail[i]._id %>" >Cancel</button>
                           <% } %>
-                          
                       </td>
-                      
-                      
-                        
-                     
                       </tr>
-                      <section>
-                        <div class="modal " id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                          <div class="modal-dialog modal-dialog-centered" role="document">
-                            <form action="" id="returning">
-                             
-                            <div  class="modal-content">
-                              <div class="modal-header">
-                                
-                                <h5 class="modal-title" id="exampleModalLongTitle">Reason for Return</h5>
-                                
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                  <span aria-hidden="true">&times;</span>
-                                </button>
-                              </div>
-                              <div id="alertpasswordUser" class="alert alert-danger" role="alert" style="display: none;">
-                      
-                              </div>
-                              <div class="modal-body" style="width: 500px;">
-                                <div class="form-group">
-                                  <input type="radio" name="one" value="Wrong Product">Wrong Product<br><br>
-                              </div>
-                              <div class="form-group">
-                                  <input type="radio" name="one" value="Not Good">Not Good<br><br>
-                              </div>
-                              <div class="form-group">
-                                <input type="radio" name="one" value="Damaged">Damaged<br><br>
-                            </div>
-                            <div class="form-group">
-                              <input type="radio" name="one" value="Changed my mind">Changed my mind<br><br>
-                          </div>
-                              </div>
-                              <input type='hidden' id="orders" name="order" value='<%=orderDetail[i]._id%>'>
-                      
-                              <div class="modal-footer">
-                                <a class="btn btn-secondary" href="/orders">Close</a>
-                                <button type="submit"  class="btn btn-primary">Submit</button>
-                              </div>
-                            </div>
-                          </form>
-                          </div>
-                        </div>
-                      </section>
                     <% } %>
                   <% } else { %>
                     <tr>
@@ -210,33 +147,6 @@
         }
       });
     });
-
-    //main form submit for success
-    $('#returning').submit(function (e) {
-                e.preventDefault();
-                var formData = $(this).serialize();
-                $.ajax({
-                    url: '/returnOrder', // replace with the URL of your server-side script
-                    type: 'POST', // use POST method
-                    data: formData,
-                    success: (response) => {
-                        // handle the response from the server
-                        console.log("yes")
-                        console.log(response);
-                        if (response.error) {
-                          Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'Select a Reason.',
-                            })
-                        } else if (response.status){
-                         location.reload()
-                        }
-                    },
-
-                });
-            });
-
   </script>
   
 

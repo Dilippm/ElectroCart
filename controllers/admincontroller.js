@@ -38,7 +38,7 @@ const loadDashboard = async (req, res) => {
     const categoryData = await Category.find({});
     const productData = await Product.find({}).populate('category').exec();
 
-    const salesCount = await Order.find({status:"Delivered"}).count();
+    const salesCount = await Order.find({}).count();
     const totalUsers = await User.find({}).count();
     const weeklyRevenue = await Order.aggregate([
       {
@@ -49,18 +49,12 @@ const loadDashboard = async (req, res) => {
         },
       },
       {
-        $match: {
-          status: 'Delivered',
-        },
-      },
-      {
         $group: {
           _id: null,
           totalAmount: { $sum: '$total' },
         },
       },
     ]);
-    
    
     const lastWeek = new Date();
     lastWeek.setDate(lastWeek.getDate() - 7);
@@ -94,10 +88,8 @@ const loadDashboard = async (req, res) => {
     const delivered = await Order.find({ status: 'Delivered' }).count();
     const shipped = await Order.find({ status: 'Shipped' }).count();
     const cancelled = await Order.find({ status: 'Cancelled' }).count();
-    const Returned = await Order.find({ status: 'Retrun Pending' }).count();
     const UPI = await Order.find({ paymentType: 'UPI' }).count();
     const COD = await Order.find({ paymentType: 'COD' }).count();
-    const wallet = await Order.find({ paymentType: 'wallet' }).count();
 
     const topSellingProducts = await Order.aggregate([
       { $unwind: '$product' },
@@ -162,10 +154,8 @@ const loadDashboard = async (req, res) => {
       delivered,
       shipped,
       cancelled,
-      Returned,
       UPI,
       COD,
-      wallet,
       sales,
       date,
       moment,
